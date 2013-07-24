@@ -30,10 +30,6 @@
     {
       "type": "MIT",
       "url": "http://opensource.org/licenses/MIT"
-    },
-    {
-      "type": "GPLv2",
-      "url": "http://www.gnu.org/licenses/gpl-2.0.html"
     }
   ],
   "bugs": "https://github.com/rheone/jquery.chord/issues",
@@ -41,6 +37,6 @@
   "docs": "https://github.com/rheone/jquery.chord",
   "demo": "http://rheone.github.io/jquery.chord",
   "dependencies": {
-    "jquery": ">=1.9"
+    "jquery": ">=1.3"
   }
 }
