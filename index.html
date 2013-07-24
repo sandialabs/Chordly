@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<title>chord</title>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>    
+		<script type="text/javascript" src="jQuery.chord.js"></script>
+		<script type="text/javascript">  
+			
+			$(document).ready(function () {
+
+				$(document).chord(
+					{
+						maxBufferLength: 5,
+						sequenceMap:
+							[
+								{
+									sequence: [
+										$.chord.literalStringToSequence('dog'),
+										$.chord.literalStringToSequence('wolf'),
+									],
+									matched: function () { console.log('bark!') }
+								},
+								{
+									sequence: [$.chord.literalStringToSequence('nada')],
+									lookup: 'nothing'
+								},
+								{
+									sequence: [$.chord.literalStringToSequence('zero')],
+								},
+								{
+									sequence: [
+										$.chord.makeSequencePart($.chord.scanCodeMap.UpArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.UpArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.DownArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.DownArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.LeftArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.RightArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.LeftArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.RightArrow),
+										$.chord.makeSequencePart($.chord.scanCodeMap.B),
+										$.chord.makeSequencePart($.chord.scanCodeMap.A),
+										$.chord.makeSequencePart($.chord.scanCodeMap.Space),
+									],
+									matched: function () { console.log('cheat codes!') }
+								},
+								{
+									sequence: $.chord.stringToSequence('shift+U shift+alt+P')
+								},
+								{
+									sequence: $.chord.stringToSequence('U !shift+P')
+								},
+								{
+									sequence: $.chord.stringToSequence('[66] A [84]'), // B A T
+									matched: function () { console.log('na na na na na') }
+								},
+								{
+									sequence: [
+										$.chord.makeSequencePart($.chord.scanCodeMap.Q, null, null, true),
+									],
+									matched: function () { console.log('ctrl + (q | Q)!') }
+								},
+								{
+									sequence: [
+										$.chord.makeSequencePart($.chord.scanCodeMap.H, true, null, false),
+									],
+									matched: function () { console.log('shift + H!') }
+								},
+
+							]
+					}
+				)
+				.on('chordMatch', function (e) {
+					console.log('chordMatch event:');
+					console.log('\t event:', e);
+					console.log('\t lookup:', e.lookup);
+					console.log('\t sequence:', e.sequence);
+					console.log('\t sequenceString:', e.sequenceString);
+					console.log('\t originalEvent:', e.originalEvent);
+				});
+				
+				$(document).chord('bind', [{
+				    sequence: $.chord.literalStringToSequence('mouse'),
+				    matched: function () { console.log('squeak!') }
+				},
+				{
+				    sequence: [
+						$.chord.literalStringToSequence('cow'),
+						$.chord.literalStringToSequence('bull'),
+				    ],
+				    matched: function () { console.log('moo!') }
+				}]);
+				
+				$(document).chord('bind',
+				{
+					sequence: $.chord.literalStringToSequence('wolf'),
+					matched: function () { console.log('howl!') }
+				});
+			
+				$(document).chord('bindSequence', 'J A C K', function () { console.log('pop!') }, 'jack in the box');
+				$(document).chord('bindLiteralSequence', 'chicken');
+
+				$('.initialInputs').chord(
+					{
+						ignoreFormElements: false,
+						sequenceMap:
+							[
+								{
+									sequence: $.chord.literalStringToSequence('duck'),
+									matched: function () { console.log('quack!') }
+								},
+								{
+									sequence: $.chord.literalStringToSequence('man'),
+									matched: function () { console.log('hello!') }
+								},
+							]
+					}
+				).on('chordMatch', function (e, lookup, sequence, kbEvent) {
+					console.log('man or duck');
+				});
+				
+				$('#adiv').chord(
+					{
+						keyEvent: 'keydown',
+						ignoreFormElements: false,
+						sequenceMap:
+							[
+								{
+									sequence: $.chord.literalStringToSequence('cat'),
+									matched: function () { console.log('meow!') }
+								}
+							]
+					}
+				);
+				
+				$('#pause').on('click', function () { $(document).chord('pause') });
+				$('#resume').on('click', function () { $(document).chord('resume') });
+				$('#toggle').on('click', function () { $(document).chord('togglePause') });
+
+				$('#destroy').on('click', function () { $(document).chord('destroy') });
+
+				$('#pushDog').on('click', function () {
+					$(document).chord('pushSequence', $.chord.literalStringToSequence('dog'));
+				});
+
+				$('#pushDogAndAct').on('click', function () {
+					$(document).chord('pushSequenceAndAct', $.chord.literalStringToSequence('dog'));
+				});
+
+				$('#actOnBuffer').on('click', function () {
+					$(document).chord('actOnBuffer');
+				});
+
+
+				$('#unbindDog').on('click', function () {
+					$(document).chord('unbind', $.chord.literalStringToSequence('dog'));
+				});
+				
+
+			});
+		</script>  
+	</head>
+	<body>
+	
+		<p>
+			Type 'dog' (case insensitive) within this page and the console will bark at you.
+			Note that form inputs are ignored for this event, so typing 'dog' will not trigger a bark
+		</p>
+
+		<p>
+			Ctrl + Q (case insensitive) will trigger a console write
+			Shift + H (case sensitive) will trigger a console write
+
+		</p>
+		
+		<fieldset>
+			<legend>A man and his duck</legend>
+
+			<p>
+				enter 'man' or 'duck' in either of these inputs and the console will respond accordingly
+				(the event is attached to inputs within this div by class selector)
+			</p>
+
+			<input id="input1" class="initialInputs" placeholder="a man, or a duck" />
+			<br />
+			<textarea id="input2" class="initialInputs" placeholder="a man, or a duck"></textarea>
+		</fieldset>
+	
+		<div id="adiv" style="border: 1px solid green">
+
+			<p>
+				the event is attached to the green div, typing 'CAT' (case sensitive) within (when in focus via the inputs) will make the console meow at you
+			</p>
+
+			<input id="input3" placeholder="Felix"/>
+			<input id="Text1" placeholder="Garfield"/>
+			<input id="Text2" placeholder="Tom"/>
+
+		</div>
+
+		<a href="#" id="pause">Pause document chord</a><br/>
+		<a href="#" id="resume">Resume document chord</a><br/>
+		<a href="#" id="toggle">Toggle document chord</a><br/>
+
+		<a href="#" id="destroy">destroy document chord</a><br/>
+
+		<a href="#" id="pushDog">push D O G</a><br/>
+		<a href="#" id="actOnBuffer">actOnBuffer</a><br/>
+
+		<a href="#" id="pushDogAndAct">push D O G and act</a><br/>
+		
+		<a href="#" id="unbindDog">unbind D O G</a><br/>
+
+	</body>
+
+</html>
