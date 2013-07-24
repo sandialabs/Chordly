@@ -2,7 +2,7 @@
     jQuery Chord - A hot key jQuery plug-in
     ------------------------
 
-    jQuery Chord is a plug-in library for jQuery 2.0.0+ that may be used to detect and act upon key
+    jQuery Chord is a plug-in library for jQuery 1.3+ that may be used to detect and act upon key
     sequences entered by a user.
 
     Chord may be attached to any DOM node in order to listen for sequences of key activity within 

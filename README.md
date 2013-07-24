@@ -1,11 +1,8 @@
 #About
 
-jQuery.Chord is a plug-in library for jQuery 1.9+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chord up to listen for key sequences, known as chords, entered by a user.
+jQuery.Chord is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chord up to listen for key sequences, known as chords, entered by a user.
 
 Chord was inspired by John Resig's [jQuery.hotkeys](https://github.com/jeresig/jquery.hotkeys). Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chord.
-
-#Demo
-You can read on for more information about Cord's usage or you can checkout the [**Chord demo**](http://rheone.github.io/jquery.chord).
 
 #Usage
 
