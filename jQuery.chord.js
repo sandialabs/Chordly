@@ -42,6 +42,9 @@
         paused (bool)  [false]
             determines if chord on the element should start paused (not collecting key)
 
+	    bufferTimeoutMs (int) [0]
+	        timeout length for key buffer clearing in ms (value of 0 means no timeout)
+
         sequenceMap (object array)  [empty array]
             an array of objects defining sequence mapping. Defaults to an empty array. Mapping 
             object may have the following attributes
@@ -129,7 +132,7 @@
         actOnBuffer   - act on data in buffer as if a listen event has occurred
                         $('#adiv').chord('actOnBuffer')
 
-        pushSequence(args)   -   push a sequence onto the buffer. Not that this will not cause a 
+        pushSequence(args)   -   push a sequence onto the buffer. Note that this will not cause a 
                             listen to be fired. You must call actOnBuffer if a reaction is desired.
                             To push and act on buffer call pushSequenceAndAct
                             args[0] -   sequence to push (array of sequence parts)
@@ -180,7 +183,9 @@
 
             sequenceMap: [], // mapping of sequences
 
-            paused: false // true key listening is paused
+            paused: false, // true key listening is paused
+
+	    bufferTimeoutMs: 0	// timeout length for key buffer clearing (value of 0 means no timeout)
         },
         identifiedBrowser = (navigator.userAgent.indexOf('Opera') !== -1
             ? 'Opera'
@@ -502,6 +507,7 @@
 
         this.$element = $(element);
         this.options = $.extend({}, optionDefaults, options);
+	this.bufferTimeout = null;
 
         // post processing
         this.options.sequenceMap = $.chord.flattenSequenceMap(this.options.sequenceMap); // flatten sequence map
@@ -594,6 +600,19 @@
             }
 
             this.sequenceBuffer.push(sequencePart);
+
+    	    // clear timeout (if set) so that buffer will not be cleared
+	        if(this.bufferTimeout != null) {
+    	        clearTimeout(this.bufferTimeout);
+	        }
+
+	        // create new time out to clear buffer
+	        if(this.options.bufferTimeoutMs != 0) {
+	            var $this = this;
+    	    	this.bufferTimeout = setTimeout( function() {
+    	    	    $this.clearSequenceBuffer();
+    	    	}, this.options.bufferTimeoutMs);
+	        }
 
         },
 

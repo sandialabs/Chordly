@@ -372,6 +372,8 @@ test('chord creation overridden defaults options', function () {
 
             clearBufferOnMatch: false,
 
+            bufferTimeoutMs: 250,
+
             sequenceMap: [
                 {
                 sequence: $.chord.literalStringToSequence('dog'),
