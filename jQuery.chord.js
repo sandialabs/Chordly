@@ -686,7 +686,7 @@
                 if ($this._sequenceMatch(sequence)) { // match found
 
                     if (typeof sequenceEntry.matched === 'function') { // if a function is to be called on match call it
-                        sequenceEntry.matched.apply(e);
+                        sequenceEntry.matched.apply(e, [e]);
                     }
 
                     // Event triggering. Create new event and associate appropriate values to it
