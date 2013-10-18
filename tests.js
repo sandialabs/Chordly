@@ -294,15 +294,15 @@ test('sequenceToString non modifier like scan codes', function () {
 
     deepEqual($.chord.stringToSequence('Shift'), [$.chord.makeSequencePart($.chord.scanCodeMap['Shift'])], 'Shift interpreted and scan code, not modifier');
     deepEqual($.chord.stringToSequence('Alt'), [$.chord.makeSequencePart($.chord.scanCodeMap['Alt'])], 'Alt interpreted and scan code, not modifier');
-    deepEqual($.chord.stringToSequence('Ctrl'), [$.chord.makeSequencePart($.chord.scanCodeMap['Ctrl'])], 'Ctrl interpreted and scan code, not modifier');
-
+    // ctrl is and control can not be confused
+    
 });
 
 test('flattenSequenceMap', function () {
 
     var input = [
         {
-            sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A1')],
+            sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A')],
             matched: function () { return 'a';},
             lookup: 'lookup a'
         },
@@ -324,7 +324,7 @@ test('flattenSequenceMap', function () {
     equal(result[0].matched.call(), 'a');
     equal(result[0].lookup, 'lookup a');
 
-    deepEqual(result[1].sequence, $.chord.stringToSequence('A1'));
+    deepEqual(result[1].sequence, $.chord.stringToSequence('A'));
     equal(result[1].matched.call(), 'a');
     equal(result[1].lookup, 'lookup a');
 
@@ -571,7 +571,7 @@ test('bind will flatten SequenceMap', function () {
     var element = $('<div>'),
         sequenceMapping = [
             {
-                sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A1')],
+                sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A')],
                 matched: function () { return 'a'; },
                 lookup: 'lookup a'
             },
@@ -598,7 +598,7 @@ test('construct option will flatten SequenceMap', function () {
     var element = $('<div>'),
         sequenceMapping = [
             {
-                sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A1')],
+                sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A')],
                 matched: function () { return 'a'; },
                 lookup: 'lookup a'
             },
@@ -686,7 +686,7 @@ test('bindLiteralSequence matched lookup', function () {
 test('bindSequence lonely', function () {
 
     var element = $('<div>'),
-        sequenceString = 'shift+D !alt+O + ctrl+!shift+D',
+        sequenceString = 'shift+D !alt+O ctrl+!shift+D',
         data = element.chord().data('chord'),
         sequenceMap = data.options.sequenceMap;
 
@@ -701,7 +701,7 @@ test('bindSequence lonely', function () {
 test('bindSequence matched', function () {
 
     var element = $('<div>'),
-        sequenceString = 'shift+D !alt+O + ctrl+!shift+D',
+        sequenceString = 'shift+D !alt+O ctrl+!shift+D',
         matched = function () { return 'dog matched'; },
     data = element.chord().data('chord'),
     sequenceMap = data.options.sequenceMap;
@@ -717,7 +717,7 @@ test('bindSequence matched', function () {
 test('bindSequence lookup', function () {
 
     var element = $('<div>'),
-        sequenceString = 'shift+D !alt+O + ctrl+!shift+D',
+        sequenceString = 'shift+D !alt+O ctrl+!shift+D',
         lookup = 'dog lookup',
         data = element.chord().data('chord'),
         sequenceMap = data.options.sequenceMap;
@@ -733,7 +733,7 @@ test('bindSequence lookup', function () {
 test('bindSequence matched lookup', function () {
 
     var element = $('<div>'),
-        sequenceString = 'shift+D !alt+O + ctrl+!shift+D',
+        sequenceString = 'shift+D !alt+O ctrl+!shift+D',
         lookup = 'dog lookup',
         matched = function () { return 'dog matched'; },
     data = element.chord().data('chord'),
@@ -1211,5 +1211,96 @@ test('option ignoreFormElements true', function () {
     equal(data.sequenceBuffer.length, 0, 'sequence buffer is empty');
     formElement.trigger(e);
     equal(data.sequenceBuffer.length, 0, 'sequence buffer has not been pushed to');
+
+});
+
+test('literalStringToSequence throws error on unrecognized character', function () {
+        
+    for (var i = 0; i <= 255; i++) {
+
+        var charString = String.fromCharCode(i);
+        if (!charString.match(/[A-Za-z0-9 ]/)) {
+
+            throws(
+                function () {
+                    $.chord.literalStringToSequence(charString);
+                },
+                "raised error message on unrecognized character code " + i
+            );
+        }
+    }
+
+});
+
+test('literalStringToSequence does not throw error on recognized character', function () {
+
+    for (var i = 0; i <= 255; i++) {
+
+        var charString = String.fromCharCode(i);
+
+        if (charString.match(/[A-Za-z0-9 ]/)) {
+            $.chord.literalStringToSequence(charString);
+            ok( true, "no raised error message on recognized character code " + i + " ('" + charString + "')");
+        }
+    }
+
+});
+
+test('stringToSequence throws error on NaN keycode', function () {
+    throws(
+        function () {
+            $.chord.stringToSequence('[potato]');
+        },
+        "raised error message on NaN keycode"
+    );
+});
+
+test('stringToSequence throws error on invalid keycode', function () {
+
+    for (var i = -10; i <= 265; i++) {
+
+        if (i >= 0 && i <= 255) {
+            continue;
+        }
+
+        var charString = "[" + i + "]";
+
+        throws(
+            function () {
+                $.chord.stringToSequence(charString);
+            },
+            "raised error message on keycode '" + charString + "'"
+        );
+
+    }
+});
+
+test('stringToSequence does not throw error on valid keycode', function () {
+
+    for (var i = 0; i <= 255; i++) {
+        var charString = "[" + i + "]";
+        $.chord.stringToSequence(charString);
+        ok(true, "no raised error message on recognized key code " + i + " ('" + charString + "')");
+    }
+});
+
+test('stringToSequence does not throw error on recognized sequence', function () {
+
+    for (var item in $.chord.scanCodeMap) {
+
+        $.chord.stringToSequence(item + " shift+" + item + " ctrl+" + item + " alt+" + item + " shift+ctrl+alt+" + item);
+        ok(true, "no raised error message on recognized sequence '" + item + "'");
+    }
+    
+});
+
+test('stringToSequence throws error on unrecognized sequence', function () {
+
+    throws(
+        function () {
+            $.chord.stringToSequence('Potato');
+        },
+        "raised error message on unrecognized sequence"
+    );
 
 });

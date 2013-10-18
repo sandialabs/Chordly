@@ -344,16 +344,18 @@
                 c,
                 i;
 
-            input = input.toUpperCase();
+            input = input.toLowerCase();    // TRIVIA: for the sake of normalization this was a toUpperCase but apparently "ß" (char 223) becomes "SS" under that conversion. Hence the seemingly meaningless but crucial toLower case followed by toUpperCase of individual chars
 
             for (i = 0; i < input.length; i++) {
 
                 c = input.charAt(i);
 
-                if ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
-                    keyCode = $.chord.scanCodeMap[c.toString()];
+                if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+                    keyCode = $.chord.scanCodeMap[c.toString().toUpperCase()];
                 } else if (c === ' ') {
                     keyCode = $.chord.scanCodeMap.Space;
+                } else {
+                    throw "Encountered unrecognized character '" + c + "' (char code:" + c.charCodeAt(0) + ")  in literal string sequence '" + input + "' at index " + i + "; Literal string to a sequence must be alpha numeric or space.";
                 }
 
                 sequence.push($.chord.makeSequencePart(keyCode));
@@ -394,9 +396,22 @@
                 var keyCode;
 
                 if (key.indexOf('[') !== -1 && key.indexOf(']') !== -1) { // explicit key code
-                    keyCode = parseInt(key.replace(/\D*/g, ''), 10); // parse int from string removing all non-digits
+                                        
+                    keyCode = parseInt(key.substr(1, key.length - 2), 10);  // remove first and last characters
+                    
+                    if (isNaN(keyCode)) {
+                        throw "Encountered unrecognized keycode '" + key + "' in string sequence '" + input + "' at index " + i + ".";
+                    } else if(keyCode <0 || keyCode>255) {
+                        throw "Encountered out of range keycode '" + key + "' in string sequence '" + input + "' at index " + i + ". Keycode must be between 0 and 255.";
+                    }
+
                 } else {
                     keyCode = $.chord.scanCodeMap[key];
+
+                    if (keyCode === undefined) {
+                        throw "Encountered unrecognized sequence element '" + key + "' in string sequence '" + input + "' at index " + i + ". See $.chord.scanCodeMap for valid sequence elements";
+                    }
+
                 }
 
                 sequence.push($.chord.makeSequencePart(keyCode, shift, alt, ctrl));
