@@ -43,7 +43,10 @@
             determines if chord on the element should start paused (not collecting key)
 
 	    bufferTimeoutMs (int) [0]
-	        timeout length for key buffer clearing in ms (value of 0 means no timeout)
+	        timeout length for key buffer clearing in ms (value of <1 means no timeout)
+
+        greedyTimeoutMs (int) [0]
+            timeout length since last recording of a key press before executing a match event. This is reset by next key press. (value of <1 means no greedy matching)
 
         sequenceMap (object array)  [empty array]
             an array of objects defining sequence mapping. Defaults to an empty array. Mapping 
@@ -185,7 +188,9 @@
 
             paused: false, // true key listening is paused
 
-	    bufferTimeoutMs: 0	// timeout length for key buffer clearing (value of 0 means no timeout)
+            bufferTimeoutMs: 0,	// timeout length for key buffer clearing (value of 0 means no timeout)
+
+            greedyTimeoutMs: 0  /// timeout length since last recording of a key press before executing a match event (reset by next key press)
         },
         identifiedBrowser = (navigator.userAgent.indexOf('Opera') !== -1
             ? 'Opera'
@@ -577,9 +582,27 @@
             }
 
             var act = this._pushSequencePartFromEvent(e); // get key info from event and push to history
-
+            
             if (act) {
-                this.actOnBuffer(e); // check for matches and act
+
+                // clear greedy timeout (if set)
+                if (this.greedyTimeout != null) {
+                    clearTimeout(this.greedyTimeout);
+                }
+
+                // deal with greedy by setting timer
+                if (this.options.greedyTimeoutMs > 0) {
+
+                    var $this = this;
+                    this.greedyTimeout = setTimeout(function () {
+                        $this.actOnBuffer(e); // check for matches and act
+                    }, this.options.greedyTimeoutMs);
+
+                } else { // non-greedy
+
+                    this.actOnBuffer(e); // check for matches and act
+                }
+                                
             }
         },
 
@@ -622,7 +645,7 @@
 	        }
 
 	        // create new time out to clear buffer
-	        if(this.options.bufferTimeoutMs != 0) {
+	        if(this.options.bufferTimeoutMs > 0) {
 	            var $this = this;
     	    	this.bufferTimeout = setTimeout( function() {
     	    	    $this.clearSequenceBuffer();

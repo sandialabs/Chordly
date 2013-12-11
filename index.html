@@ -9,7 +9,8 @@
 
 				$(document).chord(
 					{
-						maxBufferLength: 5,
+					    maxBufferLength: 5,
+					    greedyTimeoutMs: 250,
 						sequenceMap:
 							[
 								{
@@ -98,6 +99,9 @@
 				$(document).chord('bindSequence', 'J A C K', function () { console.log('pop!') }, 'jack in the box');
 				$(document).chord('bindLiteralSequence', 'chicken');
 
+				$(document).chord('bindLiteralSequence', 'pig', function () { console.log('oink') });
+				$(document).chord('bindLiteralSequence', 'pigs', function () { console.log('oink oink squeal') });
+                
 				$('.initialInputs').chord(
 					{
 						ignoreFormElements: false,
@@ -168,8 +172,11 @@
 		<p>
 			Ctrl + Q (case insensitive) will trigger a console write
 			Shift + H (case sensitive) will trigger a console write
-
 		</p>
+        
+        <p>
+            Greedy pattern matching: both "pig" or "pigs" may be defined to fire an event but triggering "pigs" will not trigger "pig"
+        </p>
 		
 		<fieldset>
 			<legend>A man and his duck</legend>
