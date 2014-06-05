@@ -4,13 +4,32 @@ jQuery.Chord is a plug-in library for jQuery 1.3+ that lets you detect and act u
 
 Chord was inspired by John Resig's [jQuery.hotkeys](https://github.com/jeresig/jquery.hotkeys). Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chord.
 
+A proud supporter of #mousehate
+
+##Features
+
+ - Trigger events on single, or multiple key presses. Includes Shift, Alt, and Control options
+ - Cross browser compatibility
+ - Custom 'chordMatch' event that may be listened for by user code
+ - Optionally ignore input on form elements
+ - Storage of user readable buffer of key presses
+ - Pause and Re-Start key capturing and event firing
+ - Optional automatic timeout of key buffering
+ - Optional Greedy matching
+ - Multiple instances allowed on a single page
+ - Extensible jQuery like definition of javascript code
+ - ...
+
+
 #Usage
 
 Chord may be attached to any DOM node in order to listen for sequences of keyboard activity within that node and its descendants. In its simplest form Chord can be enabled like this:
 
     $(expression).chord('bindLiteralSequence', 'hello', function () { console.log('world') });
 
-##Examples
+##Advanced Usage
+
+*Also, be sure to check out the **Code Snippet** section below that contains useful  examples and hints*
 
 While the above is great for simple keyboard input it is Chord's more advance uses where it begins to sing. Chord offers a variety of configuration options and makes it easy to handle a number of key sequences with a single configuration. A more advanced form of the above would look likes this:
 
@@ -39,7 +58,6 @@ Which admittedly looks unnecessarily more complicated until you realize it allow
         }
     }]);
 
-TODO we need to put additional examples here.
 
 ##Options
 In the above examples we are making use of Chord's `options` object which may contain the following, otherwise defaults are used:
@@ -67,6 +85,12 @@ determines if the key buffer should be cleared on a match
 
 - **paused** `(bool)` default: `[false]`
 determines if chord on the element should start paused (not collecting key)
+
+- **bufferTimeoutMs** `(int)` default: `[0]`
+timeout length for key buffer clearing in ms (value of <1 means no timeout)
+
+- **greedyTimeoutMs** `(int)` default: `[0]`
+timeout length since last recording of a key press before executing a match event. This is reset by next key press. (value of <1 means no greedy matching)
 
 - **sequenceMap** `(object array)` default: `[empty array]`
 an array of objects defining sequence mapping. Defaults to an empty array. Mapping object may have the following attributes
@@ -151,3 +175,60 @@ Below is an example of a handler of the chordMatch event.
         console.log('\t sequenceString:', e.sequenceString);
         console.log('\t originalEvent:', e.originalEvent);
     });
+    
+    
+#Code Snippets
+
+The Sky is the limit with Chord, or at the very least the keyboard. The following are some code examples of how chord may be used to make interacting with your website better.
+
+##Konami Code
+
+This example fires of an method, in this case an alert stating "Konami Code!", when the Konami Code is entered.
+
+    $(document).ready(function () {
+        $(document).chord('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
+    });
+
+#Page Redirection
+
+This example shows how chord definition may be chained to have key presses of G then H, G then F, and G then A redirect the browser to home.html, faq.html, and about.html respectively
+
+    $(document).ready(function () {
+        $(document).chord('bindSequence', 'G H', function() { window.location = 'home.html'; })
+            .chord('bindSequence', 'G F', function() { window.location = 'faq.html'; });
+            .chord('bindSequence', 'G A', function() { window.location = 'about.html'; });
+    });
+
+
+##Greedy Sequence Matching
+
+This example shows how Chord may be set up so that it will attempt to match on the longest possible key entry before defaulting to a smaller defined one. In this case entering 'cows' will not trigger the 'cow' event, yet both may still be fired.
+
+
+    $(document).ready(function () {
+       var $document = $(this); 
+       
+       $document.chord(
+        { 
+            bufferTimeoutMs: 400, // buffer auto-clears after 400 ms
+            greedyTimeoutMs: 225 // wait 225 ms for more keys before declaring a match
+        });
+        
+        
+        $document.chord('bindSequence', 'C O W', function() {
+            alert("one cow: Moo!");
+        });
+        
+        $document.chord('bindSequence', 'C O W S', function() {
+            alert("two cows: Moo! Moo!");
+        });        
+       
+    });
+
+
+##On Screen 'J/K' Style Navigation
+
+This is an example snippet of how jQuery.Chord can be used to accomplish J/K style navigation on a web page. J and K buttons may be used to optionally navigate tags marked with the 'data-selectable'  attribute. Once selected a pressing the Enter key activates the link associated with the current item.
+
+*see [jQuery Chord example of J/K navigation Gist](https://gist.github.com/rheone/995a97b6e076b044dfba)*
+
