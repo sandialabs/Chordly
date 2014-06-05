@@ -35,7 +35,24 @@
 
 <p>Chord was inspired by John Resig's <a href="https://github.com/jeresig/jquery.hotkeys">jQuery.hotkeys</a>. Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chord.</p>
 
-<h1>
+<p>A proud supporter of #mousehate</p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Trigger events on single, or multiple key presses. Includes Shift, Alt, and Control options</li>
+<li>Cross browser compatibility</li>
+<li>Custom 'chordMatch' event that may be listened for by user code</li>
+<li>Optionally ignore input on form elements</li>
+<li>Storage of user readable buffer of key presses</li>
+<li>Pause and Re-Start key capturing and event firing</li>
+<li>Optional automatic timeout of key buffering</li>
+<li>Optional Greedy matching</li>
+<li>Multiple instances allowed on a single page</li>
+<li>Extensible jQuery like definition of javascript code</li>
+<li>...</li>
+</ul><h1>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
 
 <p>Chord may be attached to any DOM node in order to listen for sequences of keyboard activity within that node and its descendants. In its simplest form Chord can be enabled like this:</p>
@@ -44,7 +61,9 @@
 </code></pre>
 
 <h2>
-<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+<a name="advanced-usage" class="anchor" href="#advanced-usage"><span class="octicon octicon-link"></span></a>Advanced Usage</h2>
+
+<p><em>Also, be sure to check out the **Code Snippet*</em> section below that contains useful  examples and hints*</p>
 
 <p>While the above is great for simple keyboard input it is Chord's more advance uses where it begins to sing. Chord offers a variety of configuration options and makes it easy to handle a number of key sequences with a single configuration. A more advanced form of the above would look likes this:</p>
 
@@ -75,8 +94,6 @@
 }]);
 </code></pre>
 
-<p>TODO we need to put additional examples here.</p>
-
 <h2>
 <a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
 
@@ -99,22 +116,22 @@ the length of the key buffer. Note that the buffer will be auto expanded in orde
 determines if the key buffer should be cleared on a match</p></li>
 <li><p><strong>paused</strong> <code>(bool)</code> default: <code>[false]</code>
 determines if chord on the element should start paused (not collecting key)</p></li>
+<li><p><strong>bufferTimeoutMs</strong> <code>(int)</code> default: <code>[0]</code>
+timeout length for key buffer clearing in ms (value of &lt;1 means no timeout)</p></li>
+<li><p><strong>greedyTimeoutMs</strong> <code>(int)</code> default: <code>[0]</code>
+timeout length since last recording of a key press before executing a match event. This is reset by next key press. (value of &lt;1 means no greedy matching)</p></li>
 <li>
 <p><strong>sequenceMap</strong> <code>(object array)</code> default: <code>[empty array]</code>
 an array of objects defining sequence mapping. Defaults to an empty array. Mapping object may have the following attributes</p>
 
 <ul>
-<li>
-<strong>sequence</strong> - a sequence, array of sequences, or array of sequence parts
+<li><p><strong>sequence</strong> - a sequence, array of sequences, or array of sequence parts
 to create a sequence from a string use
 <code>$.chord.literalStringToSequence(str)</code>
 or to create a part use
-<code>$.chord.makeSequencePart(keyCode, shift, alt, ctrl)</code>
-</li>
-<li>
-<strong>matched</strong> - optional function that will be called on sequence completion</li>
-<li>
-<strong>lookup</strong> - optional lookup code that will be passed to the custom <code>chordMatch</code> event on sequence completion</li>
+<code>$.chord.makeSequencePart(keyCode, shift, alt, ctrl)</code></p></li>
+<li><p><strong>matched</strong> - optional function that will be called on sequence completion</p></li>
+<li><p><strong>lookup</strong> - optional lookup code that will be passed to the custom <code>chordMatch</code> event on sequence completion</p></li>
 </ul>
 </li>
 </ul><h2>
@@ -189,6 +206,66 @@ args[0] sequence to push (array of sequence parts)
     console.log('\t originalEvent:', e.originalEvent);
 });
 </code></pre>
+
+<h1>
+<a name="code-snippets" class="anchor" href="#code-snippets"><span class="octicon octicon-link"></span></a>Code Snippets</h1>
+
+<p>The Sky is the limit with Chord, or at the very least the keyboard. The following are some code examples of how chord may be used to make interacting with your website better.</p>
+
+<h2>
+<a name="konami-code" class="anchor" href="#konami-code"><span class="octicon octicon-link"></span></a>Konami Code</h2>
+
+<p>This example fires of an method, in this case an alert stating "Konami Code!", when the Konami Code is entered.</p>
+
+<pre><code>$(document).ready(function () {
+    $(document).chord('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
+});
+</code></pre>
+
+<h1>
+<a name="page-redirection" class="anchor" href="#page-redirection"><span class="octicon octicon-link"></span></a>Page Redirection</h1>
+
+<p>This example shows how chord definition may be chained to have key presses of G then H, G then F, and G then A redirect the browser to home.html, faq.html, and about.html respectively</p>
+
+<pre><code>$(document).ready(function () {
+    $(document).chord('bindSequence', 'G H', function() { window.location = 'home.html'; })
+        .chord('bindSequence', 'G F', function() { window.location = 'faq.html'; });
+        .chord('bindSequence', 'G A', function() { window.location = 'about.html'; });
+});
+</code></pre>
+
+<h2>
+<a name="greedy-sequence-matching" class="anchor" href="#greedy-sequence-matching"><span class="octicon octicon-link"></span></a>Greedy Sequence Matching</h2>
+
+<p>This example shows how Chord may be set up so that it will attempt to match on the longest possible key entry before defaulting to a smaller defined one. In this case entering 'cows' will not trigger the 'cow' event, yet both may still be fired.</p>
+
+<pre><code>$(document).ready(function () {
+   var $document = $(this); 
+
+   $document.chord(
+    { 
+        bufferTimeoutMs: 400, // buffer auto-clears after 400 ms
+        greedyTimeoutMs: 225 // wait 225 ms for more keys before declaring a match
+    });
+
+
+    $document.chord('bindSequence', 'C O W', function() {
+        alert("one cow: Moo!");
+    });
+
+    $document.chord('bindSequence', 'C O W S', function() {
+        alert("two cows: Moo! Moo!");
+    });        
+
+});
+</code></pre>
+
+<h2>
+<a name="on-screen-jk-style-navigation" class="anchor" href="#on-screen-jk-style-navigation"><span class="octicon octicon-link"></span></a>On Screen 'J/K' Style Navigation</h2>
+
+<p>This is an example snippet of how jQuery.Chord can be used to accomplish J/K style navigation on a web page. J and K buttons may be used to optionally navigate tags marked with the 'data-selectable'  attribute. Once selected a pressing the Enter key activates the link associated with the current item.</p>
+
+<p><em>see <a href="https://gist.github.com/rheone/995a97b6e076b044dfba">jQuery Chord example of J/K navigation Gist</a></em></p>
         </section>
 
         <aside id="sidebar">
@@ -203,7 +280,7 @@ args[0] sequence to push (array of sequence parts)
 
           <p class="repo-owner"><a href="https://github.com/rheone/jquery.Chord"></a> is maintained by <a href="https://github.com/rheone">rheone</a>.</p>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
     </div>
