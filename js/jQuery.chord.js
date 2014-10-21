@@ -349,7 +349,7 @@
                 c,
                 i;
 
-            input = input.toLowerCase();    // TRIVIA: for the sake of normalization this was a toUpperCase but apparently "ß" (char 223) becomes "SS" under that conversion. Hence the seemingly meaningless but crucial toLower case followed by toUpperCase of individual chars
+            input = input.toLowerCase();    // TRIVIA: for the sake of normalization this was a toUpperCase but apparently char 223 (S Sharp/Eszett) becomes "SS" under that conversion. Hence the seemingly meaningless but crucial toLower case followed by toUpperCase of individual chars
 
             for (i = 0; i < input.length; i++) {
 
@@ -586,7 +586,7 @@
             if (act) {
 
                 // clear greedy timeout (if set)
-                if (this.greedyTimeout != null) {
+                if (this.greedyTimeout !== null) {
                     clearTimeout(this.greedyTimeout);
                 }
 
@@ -640,7 +640,7 @@
             this.sequenceBuffer.push(sequencePart);
 
     	    // clear timeout (if set) so that buffer will not be cleared
-	        if(this.bufferTimeout != null) {
+	        if(this.bufferTimeout !== null) {
     	        clearTimeout(this.bufferTimeout);
 	        }
 

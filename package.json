@@ -1,0 +1,46 @@
+{
+  "name": "jQuery.chord",
+  "version": "0.1.3",
+  "description": "jQuery.Chord is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chord up to listen for key sequences, known as chords, entered by a user.",
+  "author": "Robert H. Engelhardt",
+  "contributors": [
+    {
+      "name": "Robert Engelhardt",
+      "url": "http://twitter.com/rheone",
+      "email": "rheone@gmail.com"
+    },
+    {
+      "name": "Andrew Steele",
+      "url": "http://steelebit.com",
+      "email": "ahsteele@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/rheone/jquery.Chord"
+  },
+  "keywords": [
+    "chord",
+    "key",
+    "keypress",
+    "jquery",
+    "keyboard",
+    "events",
+    "hot-keys",
+    "hotkeys"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rheone/jquery.Chord/issues"
+  },
+  "homepage": "https://github.com/rheone/jquery.Chord",
+  "dependencies": {
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-qunit": "^0.5.2",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-watch": "^0.5.3"
+  }
+}
