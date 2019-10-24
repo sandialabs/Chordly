@@ -1,11 +1,12 @@
 {
-  "name": "@nwis/chordly",
+  "name": "chordly",
   "packageName": "chordly",
   "version": "1.0.0",
   "description": "chordly is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring chordly to listen for key sequences, known as chords, entered by a user.",
   "author": "Sandia National Laboratories",
   "main": "lib/chordly.js",
-  "contributors": [{
+  "contributors": [
+    {
       "name": "Robert H. Engelhardt",
       "url": "http://twitter.com/rheone",
       "email": "rheone@gmail.com"
