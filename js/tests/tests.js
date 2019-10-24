@@ -1,21 +1,20 @@
+QUnit.test('return element', function (assert) {
 
-test('return element', function () {
+    const element = $('<div>'),
+        result = element.chordly();
 
-    var element = $('<div>'),
-        result = element.chord();
+    assert.deepEqual(result, element, 'result is initial element');
 
-    deepEqual(result, element, 'result is initial element');
-
-})
+});
 
 /*
-    testing of $.chord
+    testing of $.chordly
 */
-module('contents of $.chord')
+QUnit.module('contents of $.chordly');
 
-test('scanCodeMap has letters', function () {
+QUnit.test('scanCodeMap has letters', function (assert) {
 
-    var charCodeA = 'A'.charCodeAt(0),
+    let charCodeA = 'A'.charCodeAt(0),
         charCode,
         letter,
         i;
@@ -24,15 +23,15 @@ test('scanCodeMap has letters', function () {
 
         charCode = i + charCodeA;
         letter = String.fromCharCode(charCode);
-        
-        equal($.chord.scanCodeMap[letter], charCode, letter + ' has scan code of ' + charCode);
+
+        assert.equal($.chordly.scanCodeMap[letter], charCode, letter + ' has scan code of ' + charCode);
     }
 
 });
 
-test('scanCodeMap has numbers', function () {
+QUnit.test('scanCodeMap has numbers', function (assert) {
 
-    var charCodeA = '0'.charCodeAt(0),
+    let charCodeA = '0'.charCodeAt(0),
         charCode,
         number,
         i;
@@ -42,18 +41,18 @@ test('scanCodeMap has numbers', function () {
         charCode = i + charCodeA;
         number = String.fromCharCode(charCode);
 
-        equal($.chord.scanCodeMap[number], charCode, number + ' has scan code of ' + charCode);
+        assert.equal($.chordly.scanCodeMap[number], charCode, number + ' has scan code of ' + charCode);
     }
 
 });
 
 
-test('inverseScanCodeMap', function () {
+QUnit.test('inverseScanCodeMap', function (assert) {
 
     function invertMapping(input) {
 
-        var inversion = {},
-            key;
+        const inversion = {};
+        let key;
 
         for (key in input) {
             inversion[input[key]] = key;
@@ -61,304 +60,311 @@ test('inverseScanCodeMap', function () {
 
         return inversion;
     }
-    
-    deepEqual($.chord.inverseScanCodeMap, invertMapping($.chord.scanCodeMap), 'inverseScanCodeMap is inversion of scan code map');
+
+    assert.deepEqual($.chordly.inverseScanCodeMap, invertMapping($.chordly.scanCodeMap), 'inverseScanCodeMap is inversion of scan code map');
 });
 
-test('version present', function () {
-    ok(!$.chord.version !== undefined, 'version defined');
-    ok(!$.chord.version !== null, 'version not null');
+QUnit.test('version present', function (assert) {
+    assert.ok(!$.chordly.version !== undefined, 'version defined');
+    assert.ok(!$.chordly.version !== null, 'version not null');
 });
 
-test('identifiedBrowser present', function () {
-    ok(!$.chord.identifiedBrowser !== undefined, 'identifiedBrowser defined');
-    ok(!$.chord.identifiedBrowser !== null, 'identifiedBrowser not null');
+QUnit.test('identifiedBrowser present', function (assert) {
+    assert.ok(!$.chordly.identifiedBrowser !== undefined, 'identifiedBrowser defined');
+    assert.ok(!$.chordly.identifiedBrowser !== null, 'identifiedBrowser not null');
 });
 
 // test makeSequencePart
-test('makeSequencePart assign true values', function () {
+QUnit.test('makeSequencePart assign true values', function (assert) {
 
-    var keyCode = 42,
+    const keyCode = 42,
         shift = true,
         alt = true,
         ctrl = true,
-        sequencePart = $.chord.makeSequencePart(keyCode, shift, alt, ctrl);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shift, alt, ctrl);
 
-    equal(sequencePart.keyCode, keyCode, 'keyCode assigned');
-    equal(sequencePart.shift, shift, 'shift assigned');
-    equal(sequencePart.alt, alt, 'alt assigned');
-    equal(sequencePart.ctrl, ctrl, 'ctrl assigned');
+    assert.equal(sequencePart.keyCode, keyCode, 'keyCode assigned');
+    assert.equal(sequencePart.shift, shift, 'shift assigned');
+    assert.equal(sequencePart.alt, alt, 'alt assigned');
+    assert.equal(sequencePart.ctrl, ctrl, 'ctrl assigned');
 
 });
 
-test('makeSequencePart assign false values', function () {
+QUnit.test('makeSequencePart assign false values', function (assert) {
 
-    var keyCode = 42,
+    const keyCode = 42,
         shift = false,
         alt = false,
         ctrl = false,
-        sequencePart = $.chord.makeSequencePart(keyCode, shift, alt, ctrl);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shift, alt, ctrl);
 
-    equal(sequencePart.keyCode, keyCode, 'keyCode assigned');
-    equal(sequencePart.shift, shift, 'shift assigned');
-    equal(sequencePart.alt, alt, 'alt assigned');
-    equal(sequencePart.ctrl, ctrl, 'ctrl assigned');
+    assert.equal(sequencePart.keyCode, keyCode, 'keyCode assigned');
+    assert.equal(sequencePart.shift, shift, 'shift assigned');
+    assert.equal(sequencePart.alt, alt, 'alt assigned');
+    assert.equal(sequencePart.ctrl, ctrl, 'ctrl assigned');
 
 });
 
-test('makeSequencePart default values are null', function () {
+QUnit.test('makeSequencePart default values are null', function (assert) {
 
-    var keyCode = 42,
-        sequencePart = $.chord.makeSequencePart(keyCode);
+    const keyCode = 42,
+        sequencePart = $.chordly.makeSequencePart(keyCode);
 
-    equal(sequencePart.keyCode, keyCode, 'keyCode assigned');
-    equal(sequencePart.shift, null, 'shift defaulted to null');
-    equal(sequencePart.alt, null, 'alt defaulted to null');
-    equal(sequencePart.ctrl, null, 'ctrl defaulted to null');
+    assert.equal(sequencePart.keyCode, keyCode, 'keyCode assigned');
+    assert.equal(sequencePart.shift, null, 'shift defaulted to null');
+    assert.equal(sequencePart.alt, null, 'alt defaulted to null');
+    assert.equal(sequencePart.ctrl, null, 'ctrl defaulted to null');
 
 });
 
 // test keysEqual
-test('keysEqual', function () {
+QUnit.test('keysEqual', function (assert) {
 
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, null, null, null), $.chord.makeSequencePart(5, null, null, null)), 'same scan code equal');
-    ok(!$.chord.keysEqual($.chord.makeSequencePart(5, null, null, null), $.chord.makeSequencePart(2, null, null, null)), 'different scan code equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, null, null, null), $.chordly.makeSequencePart(5, null, null, null)), 'same scan code equal');
+    assert.ok(!$.chordly.keysEqual($.chordly.makeSequencePart(5, null, null, null), $.chordly.makeSequencePart(2, null, null, null)), 'different scan code equal');
 
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, true, null, null), $.chord.makeSequencePart(5, true, null, null)), 'true shift modifier equal');
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, false, null, null), $.chord.makeSequencePart(5, false, null, null)), 'false shift modifier equal');
-    ok(!$.chord.keysEqual($.chord.makeSequencePart(5, true, null, null), $.chord.makeSequencePart(5, false, null, null)), 'different shift modifier not equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, true, null, null), $.chordly.makeSequencePart(5, true, null, null)), 'true shift modifier equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, false, null, null), $.chordly.makeSequencePart(5, false, null, null)), 'false shift modifier equal');
+    assert.ok(!$.chordly.keysEqual($.chordly.makeSequencePart(5, true, null, null), $.chordly.makeSequencePart(5, false, null, null)), 'different shift modifier not equal');
 
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, true, true, null), $.chord.makeSequencePart(5, true, true, null)), 'true alt modifier equal');
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, true, false, null), $.chord.makeSequencePart(5, true, false, null)), 'false alt modifier equal');
-    ok(!$.chord.keysEqual($.chord.makeSequencePart(5, true, true, null), $.chord.makeSequencePart(5, true, false, null)), 'different alt modifier not equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, true, true, null), $.chordly.makeSequencePart(5, true, true, null)), 'true alt modifier equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, true, false, null), $.chordly.makeSequencePart(5, true, false, null)), 'false alt modifier equal');
+    assert.ok(!$.chordly.keysEqual($.chordly.makeSequencePart(5, true, true, null), $.chordly.makeSequencePart(5, true, false, null)), 'different alt modifier not equal');
 
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, true, true, true), $.chord.makeSequencePart(5, true, true, true)), 'true ctrl modifier equal');
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, true, true, false), $.chord.makeSequencePart(5, true, true, false)), 'false ctrl modifier equal');
-    ok(!$.chord.keysEqual($.chord.makeSequencePart(5, true, true, true), $.chord.makeSequencePart(5, true, true, false)), 'different ctrl modifier not equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, true, true, true), $.chordly.makeSequencePart(5, true, true, true)), 'true ctrl modifier equal');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, true, true, false), $.chordly.makeSequencePart(5, true, true, false)), 'false ctrl modifier equal');
+    assert.ok(!$.chordly.keysEqual($.chordly.makeSequencePart(5, true, true, true), $.chordly.makeSequencePart(5, true, true, false)), 'different ctrl modifier not equal');
 
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, true, true, true), $.chord.makeSequencePart(5, null, null, null)), 'null sequence modifier ignored in compare of true');
-    ok($.chord.keysEqual($.chord.makeSequencePart(5, false, false, false), $.chord.makeSequencePart(5, null, null, null)), 'null sequence modifier ignored in compare of false');
-    ok($.chord.keysEqual($.chord.makeSequencePart(5), $.chord.makeSequencePart(5)), 'modifiers defaulted to null');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, true, true, true), $.chordly.makeSequencePart(5, null, null, null)), 'null sequence modifier ignored in compare of true');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5, false, false, false), $.chordly.makeSequencePart(5, null, null, null)), 'null sequence modifier ignored in compare of false');
+    assert.ok($.chordly.keysEqual($.chordly.makeSequencePart(5), $.chordly.makeSequencePart(5)), 'modifiers defaulted to null');
 
 });
 
 // test literalStringToSequence
-test('literalStringToSequence Empty Input', function () {
+QUnit.test('literalStringToSequence Empty Input', function (assert) {
 
-    var input = '',
-        result = $.chord.literalStringToSequence(input);
+    const input = '',
+        result = $.chordly.literalStringToSequence(input);
 
-    equal(result.length, 0, 'sequence has expected 0 length');
+    assert.equal(result.length, 0, 'sequence has expected 0 length');
 
 });
 
-test('literalStringToSequence Modifiers defaulted to null', function () {
+QUnit.test('literalStringToSequence Modifiers defaulted to null', function (assert) {
 
-    var input = 'abc 123',
-        result = $.chord.literalStringToSequence(input);
+    const input = 'abc 123',
+        result = $.chordly.literalStringToSequence(input);
 
-    equal(result.length, 7, 'sequence has expected length of 7');
+    assert.equal(result.length, 7, 'sequence has expected length of 7');
 
-    for (var i = 0; i < result.length; i++) {
-        equal(result[i].shift, null, 'sequence part ' + i + ' has null shift modifier');
-        equal(result[i].alt, null, 'sequence part ' + i + ' has null alt modifier');
-        equal(result[i].ctrl, null, 'sequence part ' + i + ' has null ctrl modifier');
+    for (let i = 0; i < result.length; i++) {
+        assert.equal(result[i].shift, null, 'sequence part ' + i + ' has null shift modifier');
+        assert.equal(result[i].alt, null, 'sequence part ' + i + ' has null alt modifier');
+        assert.equal(result[i].ctrl, null, 'sequence part ' + i + ' has null ctrl modifier');
     }
 });
 
-test('literalStringToSequence Lowercase AlphaNumericSpace input', function () {
+QUnit.test('literalStringToSequence Lowercase AlphaNumericSpace input', function (assert) {
 
-    var input = 'abc 123',
-        result = $.chord.literalStringToSequence(input);
+    const input = 'abc 123',
+        result = $.chordly.literalStringToSequence(input);
 
-    equal(result.length, 7, 'sequence has expected length of 7');
+    assert.equal(result.length, 7, 'sequence has expected length of 7');
 
-    equal(result[0].keyCode, $.chord.scanCodeMap.A, 'sequence part 0 assigned to scan code for A');
-    equal(result[1].keyCode, $.chord.scanCodeMap.B, 'sequence part 0 assigned to scan code for B');
-    equal(result[2].keyCode, $.chord.scanCodeMap.C, 'sequence part 0 assigned to scan code for C');
+    assert.equal(result[0].keyCode, $.chordly.scanCodeMap.A, 'sequence part 0 assigned to scan code for A');
+    assert.equal(result[1].keyCode, $.chordly.scanCodeMap.B, 'sequence part 0 assigned to scan code for B');
+    assert.equal(result[2].keyCode, $.chordly.scanCodeMap.C, 'sequence part 0 assigned to scan code for C');
 
-    equal(result[3].keyCode, $.chord.scanCodeMap.Space, 'sequence part 0 assigned to scan code for Space');
+    assert.equal(result[3].keyCode, $.chordly.scanCodeMap.Space, 'sequence part 0 assigned to scan code for Space');
 
-    equal(result[4].keyCode, $.chord.scanCodeMap[1], 'sequence part 0 assigned to scan code for 1');
-    equal(result[5].keyCode, $.chord.scanCodeMap[2], 'sequence part 0 assigned to scan code for 2');
-    equal(result[6].keyCode, $.chord.scanCodeMap[3], 'sequence part 0 assigned to scan code for 3');
+    assert.equal(result[4].keyCode, $.chordly.scanCodeMap[1], 'sequence part 0 assigned to scan code for 1');
+    assert.equal(result[5].keyCode, $.chordly.scanCodeMap[2], 'sequence part 0 assigned to scan code for 2');
+    assert.equal(result[6].keyCode, $.chordly.scanCodeMap[3], 'sequence part 0 assigned to scan code for 3');
 
 });
 
-test('literalStringToSequence Uppercase AlphaNumericSpace input', function () {
+QUnit.test('literalStringToSequence Uppercase AlphaNumericSpace input', function (assert) {
 
-    var input = 'ABC 123',
-        result = $.chord.literalStringToSequence(input);
+    const input = 'ABC 123',
+        result = $.chordly.literalStringToSequence(input);
 
-    equal(result.length, 7, 'sequence has expected length of 7');
+    assert.equal(result.length, 7, 'sequence has expected length of 7');
 
-    equal(result[0].keyCode, $.chord.scanCodeMap.A, 'sequence part 0 assigned to scan code for A');
-    equal(result[1].keyCode, $.chord.scanCodeMap.B, 'sequence part 0 assigned to scan code for B');
-    equal(result[2].keyCode, $.chord.scanCodeMap.C, 'sequence part 0 assigned to scan code for C');
+    assert.equal(result[0].keyCode, $.chordly.scanCodeMap.A, 'sequence part 0 assigned to scan code for A');
+    assert.equal(result[1].keyCode, $.chordly.scanCodeMap.B, 'sequence part 0 assigned to scan code for B');
+    assert.equal(result[2].keyCode, $.chordly.scanCodeMap.C, 'sequence part 0 assigned to scan code for C');
 
-    equal(result[3].keyCode, $.chord.scanCodeMap.Space, 'sequence part 0 assigned to scan code for Space');
+    assert.equal(result[3].keyCode, $.chordly.scanCodeMap.Space, 'sequence part 0 assigned to scan code for Space');
 
-    equal(result[4].keyCode, $.chord.scanCodeMap[1], 'sequence part 0 assigned to scan code for 1');
-    equal(result[5].keyCode, $.chord.scanCodeMap[2], 'sequence part 0 assigned to scan code for 2');
-    equal(result[6].keyCode, $.chord.scanCodeMap[3], 'sequence part 0 assigned to scan code for 3');
+    assert.equal(result[4].keyCode, $.chordly.scanCodeMap[1], 'sequence part 0 assigned to scan code for 1');
+    assert.equal(result[5].keyCode, $.chordly.scanCodeMap[2], 'sequence part 0 assigned to scan code for 2');
+    assert.equal(result[6].keyCode, $.chordly.scanCodeMap[3], 'sequence part 0 assigned to scan code for 3');
 
 });
 
 // stringToSequence tests
-test('stringToSequence Defaults to null modifiers', function () {
+QUnit.test('stringToSequence Defaults to null modifiers', function (assert) {
 
-    var input = 'D O G [57]',
-        result = $.chord.stringToSequence(input);
+    const input = 'D O G [57]',
+        result = $.chordly.stringToSequence(input);
 
-    equal(result.length, 4, 'expected sequence length');
-    deepEqual(result, $.chord.literalStringToSequence('dog9'), 'sequence value as expected');
-
-});
-
-test('stringToSequence Positive modifiers assignable', function () {
-
-    var input = 'shift+D alt+O ctrl+G shift+alt+ctrl+[42]',
-        result = $.chord.stringToSequence(input),
-        expectation = [
-            $.chord.makeSequencePart($.chord.scanCodeMap['D'], true, null, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['O'], null, true, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['G'], null, null, true),
-            $.chord.makeSequencePart(42, true, true, true),
-        ];
-
-    deepEqual(result, expectation, 'sequence value as expected');
+    assert.equal(result.length, 4, 'expected sequence length');
+    assert.deepEqual(result, $.chordly.literalStringToSequence('dog9'), 'sequence value as expected');
 
 });
 
-test('stringToSequence Negative modifiers assignable', function () {
+QUnit.test('stringToSequence Positive modifiers assignable', function (assert) {
 
-    var input = '!shift+D !alt+O !ctrl+G !shift+!alt+!ctrl+[42]',
-        result = $.chord.stringToSequence(input),
+    const input = 'shift+D alt+O ctrl+G shift+alt+ctrl+[42]',
+        result = $.chordly.stringToSequence(input),
         expectation = [
-            $.chord.makeSequencePart($.chord.scanCodeMap['D'], false, null, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['O'], null, false, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['G'], null, null, false),
-            $.chord.makeSequencePart(42, false, false, false),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['D'], true, null, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['O'], null, true, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['G'], null, null, true),
+            $.chordly.makeSequencePart(42, true, true, true),
         ];
 
-    deepEqual(result, expectation, 'sequence value as expected');
+    assert.deepEqual(result, expectation, 'sequence value as expected');
 
 });
 
-test('stringToSequence negative modifiers overrides positive modifiers', function () {
+QUnit.test('stringToSequence Negative modifiers assignable', function (assert) {
 
-    var input = '!shift+shift+D alt+!alt+O ctrl+!ctrl+G !shift+!alt+!ctrl+shift+alt+ctrl+[42]',
-        result = $.chord.stringToSequence(input),
+    const input = '!shift+D !alt+O !ctrl+G !shift+!alt+!ctrl+[42]',
+        result = $.chordly.stringToSequence(input),
         expectation = [
-            $.chord.makeSequencePart($.chord.scanCodeMap['D'], false, null, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['O'], null, false, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['G'], null, null, false),
-            $.chord.makeSequencePart(42, false, false, false),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['D'], false, null, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['O'], null, false, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['G'], null, null, false),
+            $.chordly.makeSequencePart(42, false, false, false),
         ];
 
-    deepEqual(result, expectation, 'sequence value as expected');
-
-    equal(result.length, 4);
+    assert.deepEqual(result, expectation, 'sequence value as expected');
 
 });
 
-test('sequenceToString negative modifiers overrides positive modifiers', function () {
+QUnit.test('stringToSequence negative modifiers overrides positive modifiers', function (assert) {
 
-    var input = '!shift+shift+D alt+!alt+O ctrl+!ctrl+G !shift+!alt+!ctrl+shift+alt+ctrl+[42]',
-        result = $.chord.stringToSequence(input),
+    const input = '!shift+shift+D alt+!alt+O ctrl+!ctrl+G !shift+!alt+!ctrl+shift+alt+ctrl+[42]',
+        result = $.chordly.stringToSequence(input),
         expectation = [
-            $.chord.makeSequencePart($.chord.scanCodeMap['D'], false, null, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['O'], null, false, null),
-            $.chord.makeSequencePart($.chord.scanCodeMap['G'], null, null, false),
-            $.chord.makeSequencePart(42, false, false, false),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['D'], false, null, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['O'], null, false, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['G'], null, null, false),
+            $.chordly.makeSequencePart(42, false, false, false),
         ];
 
-    deepEqual(result, expectation, 'sequence value as expected');
+    assert.deepEqual(result, expectation, 'sequence value as expected');
 
-    equal(result.length, 4);
+    assert.equal(result.length, 4);
+
+});
+
+QUnit.test('sequenceToString negative modifiers overrides positive modifiers', function (assert) {
+
+    const input = '!shift+shift+D alt+!alt+O ctrl+!ctrl+G !shift+!alt+!ctrl+shift+alt+ctrl+[42]',
+        result = $.chordly.stringToSequence(input),
+        expectation = [
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['D'], false, null, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['O'], null, false, null),
+            $.chordly.makeSequencePart($.chordly.scanCodeMap['G'], null, null, false),
+            $.chordly.makeSequencePart(42, false, false, false),
+        ];
+
+    assert.deepEqual(result, expectation, 'sequence value as expected');
+
+    assert.equal(result.length, 4);
 
 });
 
 // Sequence to string
-test('sequenceToString', function () {
+QUnit.test('sequenceToString', function (assert) {
 
-    var inputString = '!shift+D alt+O !ctrl+G !shift+!alt+!ctrl+[42]',
-        inputSequence = $.chord.stringToSequence(inputString),
-        result = $.chord.sequenceToString(inputSequence);
+    const inputString = '!shift+D alt+O !ctrl+G !shift+!alt+!ctrl+[42]',
+        inputSequence = $.chordly.stringToSequence(inputString),
+        result = $.chordly.sequenceToString(inputSequence);
 
-    equal(result, inputString);
+    assert.equal(result, inputString);
 
 });
 
-test('sequenceToString non modifier like scan codes', function () {
+QUnit.test('sequenceToString non modifier like scan codes', function (assert) {
 
-    deepEqual($.chord.stringToSequence('Shift'), [$.chord.makeSequencePart($.chord.scanCodeMap['Shift'])], 'Shift interpreted and scan code, not modifier');
-    deepEqual($.chord.stringToSequence('Alt'), [$.chord.makeSequencePart($.chord.scanCodeMap['Alt'])], 'Alt interpreted and scan code, not modifier');
+    assert.deepEqual($.chordly.stringToSequence('Shift'), [$.chordly.makeSequencePart($.chordly.scanCodeMap['Shift'])], 'Shift interpreted and scan code, not modifier');
+    assert.deepEqual($.chordly.stringToSequence('Alt'), [$.chordly.makeSequencePart($.chordly.scanCodeMap['Alt'])], 'Alt interpreted and scan code, not modifier');
     // ctrl is and control can not be confused
-    
+
 });
 
-test('flattenSequenceMap', function () {
+QUnit.test('flattenSequenceMap', function (assert) {
 
-    var input = [
-        {
-            sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A')],
-            matched: function () { return 'a';},
+    const input = [{
+            sequence: [$.chordly.stringToSequence('A'), $.chordly.stringToSequence('A')],
+            matched: function () {
+                return 'a';
+            },
             lookup: 'lookup a'
         },
-        {
-            sequence: $.chord.stringToSequence('B'),
-            matched: function () { return 'b'; },
-            lookup: 'lookup b'
-        },
-        {
-            sequence: [$.chord.stringToSequence('C')],
-            matched: function () { return 'c'; },
-            lookup: 'lookup c'
-        }],
-    	result = $.chord.flattenSequenceMap(input);
+            {
+                sequence: $.chordly.stringToSequence('B'),
+                matched: function () {
+                    return 'b';
+                },
+                lookup: 'lookup b'
+            },
+            {
+                sequence: [$.chordly.stringToSequence('C')],
+                matched: function () {
+                    return 'c';
+                },
+                lookup: 'lookup c'
+            }
+        ],
+        result = $.chordly.flattenSequenceMap(input);
 
-    equal(result.length, 4);
+    assert.equal(result.length, 4);
 
-    deepEqual(result[0].sequence, $.chord.stringToSequence('A'));
-    equal(result[0].matched.call(), 'a');
-    equal(result[0].lookup, 'lookup a');
+    assert.deepEqual(result[0].sequence, $.chordly.stringToSequence('A'));
+    assert.equal(result[0].matched.call(), 'a');
+    assert.equal(result[0].lookup, 'lookup a');
 
-    deepEqual(result[1].sequence, $.chord.stringToSequence('A'));
-    equal(result[1].matched.call(), 'a');
-    equal(result[1].lookup, 'lookup a');
+    assert.deepEqual(result[1].sequence, $.chordly.stringToSequence('A'));
+    assert.equal(result[1].matched.call(), 'a');
+    assert.equal(result[1].lookup, 'lookup a');
 
-    deepEqual(result[2].sequence, $.chord.stringToSequence('B'));
-    equal(result[2].matched.call(), 'b');
-    equal(result[2].lookup, 'lookup b');
+    assert.deepEqual(result[2].sequence, $.chordly.stringToSequence('B'));
+    assert.equal(result[2].matched.call(), 'b');
+    assert.equal(result[2].lookup, 'lookup b');
 
-    deepEqual(result[3].sequence, $.chord.stringToSequence('C'));
-    equal(result[3].matched.call(), 'c');
-    equal(result[3].lookup, 'lookup c');
+    assert.deepEqual(result[3].sequence, $.chordly.stringToSequence('C'));
+    assert.equal(result[3].matched.call(), 'c');
+    assert.equal(result[3].lookup, 'lookup c');
 
 });
 
 /*
-    Chord prototyping test
+    Chordly prototyping test
 */
-module('chord prototype')
-test('chord creation', function () {
-    
-    var element = $('<div>');
+QUnit.module('chordly prototype');
 
-    equal(element.data('chord'), undefined, 'no initial chord data');
+QUnit.test('chordly creation', function (assert) {
 
-    element.chord();
+    const element = $('<div>');
 
-    ok(element.data('chord') !== undefined, 'chord data present');
-    ok(element.hasClass('chord'), 'chord class added to element');
-    ok(element.data('chord').options !== undefined, 'defaults set on creation');
+    assert.equal(element.data('chordly'), undefined, 'no initial chordly data');
+
+    element.chordly();
+
+    assert.ok(element.data('chordly') !== undefined, 'chordly data present');
+    assert.ok(element.hasClass('chordly'), 'chordly class added to element');
+    assert.ok(element.data('chordly').options !== undefined, 'defaults set on creation');
 
 });
 
-test('chord creation overridden defaults options', function () {
+QUnit.test('chordly creation overridden defaults options', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         options = {
             captureShift: true,
             captureAlt: true,
@@ -376,664 +382,732 @@ test('chord creation overridden defaults options', function () {
 
             greedyTimeoutMs: 0,
 
-            sequenceMap: [
-                {
-                sequence: $.chord.literalStringToSequence('dog'),
+            sequenceMap: [{
+                sequence: $.chordly.literalStringToSequence('dog'),
                 lookup: "dog",
                 matched: undefined
-                }
-            ],
+            }],
 
             paused: true
         },
-        data = element.chord(options).data('chord');
+        data = element.chordly(options).data('chordly');
 
-    deepEqual(element.data('chord').options, options, 'defaults overridden');
-
-});
-
-test('chord destroy', function () {
-
-    var element = $('<div>');
-    
-    element.chord();
-    element.chord('destroy');
-    
-    equal(element.data('chord'), undefined, 'no chord data');
-    ok(!element.hasClass('chord'), 'chord class not on element');
-    
-});
-
-test('can push to sequence buffer', function () {
-
-    var element = $('<div>'),
-        data = element.chord().data('chord'),
-        sequence = $.chord.literalStringToSequence('dog');
-    
-    equal(data.sequenceBuffer.length, 0, 'sequence buffer starts at length 0');
-
-    element.chord('pushSequence', sequence);
-
-    deepEqual(data.sequenceBuffer, sequence, 'sequence buffer contains pushed sequence');
+    assert.deepEqual(element.data('chordly').options, options, 'defaults overridden');
 
 });
 
-test('can clear sequence buffer', function () {
+QUnit.test('chordly destroy', function (assert) {
 
-    var element = $('<div>'),
-        data = element.chord().data('chord'),
-        sequence = $.chord.literalStringToSequence('dog');
+    const element = $('<div>');
 
-    element.chord('pushSequence', sequence);
-    ok(data.sequenceBuffer.length > 0, 'sequence buffer contains data');
+    element.chordly();
+    element.chordly('destroy');
 
-    element.chord('clearSequenceBuffer');
-    ok(data.sequenceBuffer.length === 0, 'sequence buffer contains data');
+    assert.equal(element.data('chordly'), undefined, 'no chordly data');
+    assert.ok(!element.hasClass('chordly'), 'chordly class not on element');
 
 });
 
-test('can pause', function () {
+QUnit.test('can push to sequence buffer', function (assert) {
 
-    var element = $('<div>'),
-        options = element.chord({ paused: false }).data('chord').options;
-    
-    equal(options.paused, false, 'starts in non-paused state');
-    
-    element.chord('pause')
-    equal(options.paused, true, 'in paused state');
+    const element = $('<div>'),
+        data = element.chordly().data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog');
 
-    element.chord('pause')
-    equal(options.paused, true, 'stays in paused state');
+    assert.equal(data.sequenceBuffer.length, 0, 'sequence buffer starts at length 0');
 
-});
+    element.chordly('pushSequence', sequence);
 
-test('can resume', function () {
-
-    var element = $('<div>'),
-        options = element.chord({ paused: true }).data('chord').options;
-
-    equal(options.paused, true, 'starts in paused state');
-
-    element.chord('resume')
-    equal(options.paused, false, 'in non-paused state');
-
-    element.chord('resume')
-    equal(options.paused, false, 'stays in non-paused state');
+    assert.deepEqual(data.sequenceBuffer, sequence, 'sequence buffer contains pushed sequence');
 
 });
 
-test('can toggle pause', function () {
+QUnit.test('can clear sequence buffer', function (assert) {
 
-    var element = $('<div>'),
-        options = element.chord({ paused: false }).data('chord').options;
+    const element = $('<div>'),
+        data = element.chordly().data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog');
 
-    equal(options.paused, false, 'starts in non-paused state');
+    element.chordly('pushSequence', sequence);
+    assert.ok(data.sequenceBuffer.length > 0, 'sequence buffer contains data');
 
-    element.chord('togglePause')
-    equal(options.paused, true, 'in paused state');
-
-    element.chord('togglePause')
-    equal(options.paused, false, 'in non-paused state');
+    element.chordly('clearSequenceBuffer');
+    assert.ok(data.sequenceBuffer.length === 0, 'sequence buffer contains data');
 
 });
 
-test('can bind new sequence', function () {
+QUnit.test('can pause', function (assert) {
 
-    var element = $('<div>'),
-        sequenceMap = element.chord().data('chord').options.sequenceMap,
+    const element = $('<div>'),
+        options = element.chordly({
+            paused: false
+        }).data('chordly').options;
+
+    assert.equal(options.paused, false, 'starts in non-paused state');
+
+    element.chordly('pause');
+    assert.equal(options.paused, true, 'in paused state');
+
+    element.chordly('pause');
+    assert.equal(options.paused, true, 'stays in paused state');
+
+});
+
+QUnit.test('can resume', function (assert) {
+
+    const element = $('<div>'),
+        options = element.chordly({
+            paused: true
+        }).data('chordly').options;
+
+    assert.equal(options.paused, true, 'starts in paused state');
+
+    element.chordly('resume');
+    assert.equal(options.paused, false, 'in non-paused state');
+
+    element.chordly('resume');
+    assert.equal(options.paused, false, 'stays in non-paused state');
+
+});
+
+QUnit.test('can toggle pause', function (assert) {
+
+    const element = $('<div>'),
+        options = element.chordly({
+            paused: false
+        }).data('chordly').options;
+
+    assert.equal(options.paused, false, 'starts in non-paused state');
+
+    element.chordly('togglePause');
+    assert.equal(options.paused, true, 'in paused state');
+
+    element.chordly('togglePause');
+    assert.equal(options.paused, false, 'in non-paused state');
+
+});
+
+QUnit.test('can bind new sequence', function (assert) {
+
+    const element = $('<div>'),
+        sequenceMap = element.chordly().data('chordly').options.sequenceMap,
         sequenceMapping = {
-            sequence: $.chord.literalStringToSequence('dog'),
+            sequence: $.chordly.literalStringToSequence('dog'),
             lookup: 'lookup',
             matched: undefined
         };
 
-    equal(sequenceMap.length, 0, 'sequence map starts empty');
+    assert.equal(sequenceMap.length, 0, 'sequence map starts empty');
 
-    element.chord('bind', sequenceMapping);
+    element.chordly('bind', sequenceMapping);
 
-    deepEqual(sequenceMap[0], sequenceMapping, 'sequence mapping bound');
+    assert.deepEqual(sequenceMap[0], sequenceMapping, 'sequence mapping bound');
 
-})
+});
 
-test('can double bind new sequence', function () {
+QUnit.test('can double bind new sequence', function (assert) {
 
-    var element = $('<div>'),
-        sequenceMap = element.chord().data('chord').options.sequenceMap,
+    const element = $('<div>'),
+        sequenceMap = element.chordly().data('chordly').options.sequenceMap,
         sequenceMapping = {
-            sequence: $.chord.literalStringToSequence('dog'),
+            sequence: $.chordly.literalStringToSequence('dog'),
             lookup: 'lookup',
             matched: undefined
         };
 
-    equal(sequenceMap.length, 0, 'sequence map starts empty');
+    assert.equal(sequenceMap.length, 0, 'sequence map starts empty');
 
-    element.chord('bind', sequenceMapping);
-    element.chord('bind', sequenceMapping);
+    element.chordly('bind', sequenceMapping);
+    element.chordly('bind', sequenceMapping);
 
-    deepEqual(sequenceMap[0], sequenceMapping, 'sequence mapping bound once');
-    deepEqual(sequenceMap[1], sequenceMapping, 'sequence mapping bound twice');
+    assert.deepEqual(sequenceMap[0], sequenceMapping, 'sequence mapping bound once');
+    assert.deepEqual(sequenceMap[1], sequenceMapping, 'sequence mapping bound twice');
 
-})
+});
 
-test('can unbind sequence', function () {
+QUnit.test('can unbind sequence', function (assert) {
 
-    var element = $('<div>'),
-        sequenceMap = element.chord().data('chord').options.sequenceMap,
-        sequence1 = $.chord.literalStringToSequence('dog'),
+    const element = $('<div>'),
+        sequenceMap = element.chordly().data('chordly').options.sequenceMap,
+        sequence1 = $.chordly.literalStringToSequence('dog'),
         sequenceMapping1 = {
             sequence: sequence1,
             lookup: 'lookup1',
             matched: undefined
         },
-        sequence2 = $.chord.literalStringToSequence('cat'),
+        sequence2 = $.chordly.literalStringToSequence('cat'),
         sequenceMapping2 = {
             sequence: sequence2,
             lookup: 'lookup2',
             matched: undefined
         };
-        
-    element.chord('bind', sequenceMapping1);
-    element.chord('bind', sequenceMapping2);
-    deepEqual(sequenceMap[0], sequenceMapping1, 'sequence mapping1 exists');
-    deepEqual(sequenceMap[1], sequenceMapping2, 'sequence mapping2 exists');
 
-    element.chord('unbind', sequence1);
-    equal(sequenceMap.length, 1, 'sequence mapping unbound')
-    deepEqual(sequenceMap[0], sequenceMapping2, 'previous mapping2 exists');
+    element.chordly('bind', sequenceMapping1);
+    element.chordly('bind', sequenceMapping2);
+    assert.deepEqual(sequenceMap[0], sequenceMapping1, 'sequence mapping1 exists');
+    assert.deepEqual(sequenceMap[1], sequenceMapping2, 'sequence mapping2 exists');
 
-})
+    element.chordly('unbind', sequence1);
+    assert.equal(sequenceMap.length, 1, 'sequence mapping unbound');
+    assert.deepEqual(sequenceMap[0], sequenceMapping2, 'previous mapping2 exists');
 
-test('can unbind all matching sequences', function () {
+});
 
-    var element = $('<div>'),
-        sequenceMap = element.chord().data('chord').options.sequenceMap,
-        sequence = $.chord.literalStringToSequence('dog'),
+QUnit.test('can unbind all matching sequences', function (assert) {
+
+    const element = $('<div>'),
+        sequenceMap = element.chordly().data('chordly').options.sequenceMap,
+        sequence = $.chordly.literalStringToSequence('dog'),
         sequenceMapping = {
             sequence: sequence,
             lookup: 'lookup',
             matched: undefined
         };
 
-    equal(sequenceMap.length, 0, 'sequence map starts empty')
+    assert.equal(sequenceMap.length, 0, 'sequence map starts empty');
 
-    element.chord('bind', sequenceMapping);
-    element.chord('bind', sequenceMapping);
+    element.chordly('bind', sequenceMapping);
+    element.chordly('bind', sequenceMapping);
 
-    deepEqual(sequenceMap[0], sequenceMapping, 'sequence mapping bound once');
-    deepEqual(sequenceMap[1], sequenceMapping, 'sequence mapping bound twice');
+    assert.deepEqual(sequenceMap[0], sequenceMapping, 'sequence mapping bound once');
+    assert.deepEqual(sequenceMap[1], sequenceMapping, 'sequence mapping bound twice');
 
-    element.chord('unbind', sequence);
+    element.chordly('unbind', sequence);
 
-    equal(sequenceMap.length, 0, 'sequences unbound');
+    assert.equal(sequenceMap.length, 0, 'sequences unbound');
 
-})
+});
 
-test('bind will flatten SequenceMap', function () {
+QUnit.test('bind will flatten SequenceMap', function (assert) {
 
-    var element = $('<div>'),
-        sequenceMapping = [
-            {
-                sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A')],
-                matched: function () { return 'a'; },
-                lookup: 'lookup a'
+    const element = $('<div>'),
+        sequenceMapping = [{
+            sequence: [$.chordly.stringToSequence('A'), $.chordly.stringToSequence('A')],
+            matched: function () {
+                return 'a';
             },
+            lookup: 'lookup a'
+        },
             {
-                sequence: $.chord.stringToSequence('B'),
-                matched: function () { return 'b'; },
+                sequence: $.chordly.stringToSequence('B'),
+                matched: function () {
+                    return 'b';
+                },
                 lookup: 'lookup b'
             },
             {
-                sequence: [$.chord.stringToSequence('C')],
-                matched: function () { return 'c'; },
+                sequence: [$.chordly.stringToSequence('C')],
+                matched: function () {
+                    return 'c';
+                },
                 lookup: 'lookup c'
-            }],
-        data = element.chord().data('chord').options.sequenceMap;
+            }
+        ],
+        data = element.chordly().data('chordly').options.sequenceMap;
 
-    element.chord('bind', sequenceMapping);
-    deepEqual(element.chord().data('chord').options.sequenceMap, $.chord.flattenSequenceMap(sequenceMapping), 'bind flattened map');
+    element.chordly('bind', sequenceMapping);
+    assert.deepEqual(element.chordly().data('chordly').options.sequenceMap, $.chordly.flattenSequenceMap(sequenceMapping), 'bind flattened map');
 
 });
 
 
-test('construct option will flatten SequenceMap', function () {
+QUnit.test('construct option will flatten SequenceMap', function (assert) {
 
-    var element = $('<div>'),
-        sequenceMapping = [
-            {
-                sequence: [$.chord.stringToSequence('A'), $.chord.stringToSequence('A')],
-                matched: function () { return 'a'; },
-                lookup: 'lookup a'
+    const element = $('<div>'),
+        sequenceMapping = [{
+            sequence: [$.chordly.stringToSequence('A'), $.chordly.stringToSequence('A')],
+            matched: function () {
+                return 'a';
             },
+            lookup: 'lookup a'
+        },
             {
-                sequence: $.chord.stringToSequence('B'),
-                matched: function () { return 'b'; },
+                sequence: $.chordly.stringToSequence('B'),
+                matched: function () {
+                    return 'b';
+                },
                 lookup: 'lookup b'
             },
             {
-                sequence: [$.chord.stringToSequence('C')],
-                matched: function () { return 'c'; },
+                sequence: [$.chordly.stringToSequence('C')],
+                matched: function () {
+                    return 'c';
+                },
                 lookup: 'lookup c'
-            }],
-        expectedResult = $.chord.flattenSequenceMap(sequenceMapping),
-        data = element.chord({ sequenceMap: sequenceMapping }).data('chord').options.sequenceMap;
-        
-    deepEqual(element.chord().data('chord').options.sequenceMap, $.chord.flattenSequenceMap(sequenceMapping), 'options flattened map');
+            }
+        ],
+        expectedResult = $.chordly.flattenSequenceMap(sequenceMapping),
+        data = element.chordly({
+            sequenceMap: sequenceMapping
+        }).data('chordly').options.sequenceMap;
+
+    assert.deepEqual(element.chordly().data('chordly').options.sequenceMap, $.chordly.flattenSequenceMap(sequenceMapping), 'options flattened map');
 
 });
 
-test('bindLiteralSequence lonely', function() {
+QUnit.test('bindLiteralSequence lonely', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         sequenceString = 'chicken',
-        data = element.chord().data('chord'),
-        sequenceMap = data.options.sequenceMap;
-    
-    element.chord('bindLiteralSequence', sequenceString);
-        
-    deepEqual(sequenceMap[0].sequence, $.chord.literalStringToSequence(sequenceString), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
-    deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
-    
-});
-
-test('bindLiteralSequence matched', function () {
-   
-    var element = $('<div>'),
-        sequenceString = 'chicken',
-        matched = function () { return 'chicken matched'; },
-        data = element.chord().data('chord'),
+        data = element.chordly().data('chordly'),
         sequenceMap = data.options.sequenceMap;
 
-    element.chord('bindLiteralSequence', sequenceString, matched);
+    element.chordly('bindLiteralSequence', sequenceString);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.literalStringToSequence(sequenceString, matched), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, matched, 'matched defined');
-    deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
-        
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.literalStringToSequence(sequenceString), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
+    assert.deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
+
 });
 
-test('bindLiteralSequence lookup', function () {
+QUnit.test('bindLiteralSequence matched', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         sequenceString = 'chicken',
-        lookup = 'chicken lookup',
-        data = element.chord().data('chord'),
+        matched = function () {
+            return 'chicken matched';
+        },
+        data = element.chordly().data('chordly'),
         sequenceMap = data.options.sequenceMap;
 
-    element.chord('bindLiteralSequence', sequenceString, lookup);
+    element.chordly('bindLiteralSequence', sequenceString, matched);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.literalStringToSequence(sequenceString, lookup), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
-    deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.literalStringToSequence(sequenceString, matched), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, matched, 'matched defined');
+    assert.deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
 
 });
 
-test('bindLiteralSequence matched lookup', function () {
+QUnit.test('bindLiteralSequence lookup', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         sequenceString = 'chicken',
         lookup = 'chicken lookup',
-        matched = function () { return 'chicken matched'; },
-        data = element.chord().data('chord'),
+        data = element.chordly().data('chordly'),
         sequenceMap = data.options.sequenceMap;
 
-        element.chord('bindLiteralSequence', sequenceString, matched, lookup);
+    element.chordly('bindLiteralSequence', sequenceString, lookup);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.literalStringToSequence(sequenceString, lookup), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, matched, 'matched defined');
-    deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.literalStringToSequence(sequenceString, lookup), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
+    assert.deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
 
 });
 
-test('bindSequence lonely', function () {
+QUnit.test('bindLiteralSequence matched lookup', function (assert) {
 
-    var element = $('<div>'),
-        sequenceString = 'shift+D !alt+O ctrl+!shift+D',
-        data = element.chord().data('chord'),
+    const element = $('<div>'),
+        sequenceString = 'chicken',
+        lookup = 'chicken lookup',
+        matched = function () {
+            return 'chicken matched';
+        },
+        data = element.chordly().data('chordly'),
         sequenceMap = data.options.sequenceMap;
 
-    element.chord('bindSequence', sequenceString);
+    element.chordly('bindLiteralSequence', sequenceString, matched, lookup);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.stringToSequence(sequenceString), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
-    deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.literalStringToSequence(sequenceString, lookup), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, matched, 'matched defined');
+    assert.deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
 
 });
 
-test('bindSequence matched', function () {
+QUnit.test('bindSequence lonely', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         sequenceString = 'shift+D !alt+O ctrl+!shift+D',
-        matched = function () { return 'dog matched'; },
-    data = element.chord().data('chord'),
-    sequenceMap = data.options.sequenceMap;
+        data = element.chordly().data('chordly'),
+        sequenceMap = data.options.sequenceMap;
 
-    element.chord('bindSequence', sequenceString, matched);
+    element.chordly('bindSequence', sequenceString);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.stringToSequence(sequenceString, matched), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, matched, 'matched defined');
-    deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.stringToSequence(sequenceString), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
+    assert.deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
 
 });
 
-test('bindSequence lookup', function () {
+QUnit.test('bindSequence matched', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
+        sequenceString = 'shift+D !alt+O ctrl+!shift+D',
+        matched = function () {
+            return 'dog matched';
+        },
+        data = element.chordly().data('chordly'),
+        sequenceMap = data.options.sequenceMap;
+
+    element.chordly('bindSequence', sequenceString, matched);
+
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.stringToSequence(sequenceString, matched), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, matched, 'matched defined');
+    assert.deepEqual(sequenceMap[0].lookup, undefined, 'lookup undefined');
+
+});
+
+QUnit.test('bindSequence lookup', function (assert) {
+
+    const element = $('<div>'),
         sequenceString = 'shift+D !alt+O ctrl+!shift+D',
         lookup = 'dog lookup',
-        data = element.chord().data('chord'),
+        data = element.chordly().data('chordly'),
         sequenceMap = data.options.sequenceMap;
 
-    element.chord('bindSequence', sequenceString, lookup);
+    element.chordly('bindSequence', sequenceString, lookup);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.stringToSequence(sequenceString, lookup), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
-    deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.stringToSequence(sequenceString, lookup), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, undefined, 'matched undefined');
+    assert.deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
 
 });
 
-test('bindSequence matched lookup', function () {
+QUnit.test('bindSequence matched lookup', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         sequenceString = 'shift+D !alt+O ctrl+!shift+D',
         lookup = 'dog lookup',
-        matched = function () { return 'dog matched'; },
-    data = element.chord().data('chord'),
-    sequenceMap = data.options.sequenceMap;
+        matched = function () {
+            return 'dog matched';
+        },
+        data = element.chordly().data('chordly'),
+        sequenceMap = data.options.sequenceMap;
 
-    element.chord('bindSequence', sequenceString, matched, lookup);
+    element.chordly('bindSequence', sequenceString, matched, lookup);
 
-    deepEqual(sequenceMap[0].sequence, $.chord.stringToSequence(sequenceString, lookup), 'sequence assigned');
-    deepEqual(sequenceMap[0].matched, matched, 'matched defined');
-    deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
+    assert.deepEqual(sequenceMap[0].sequence, $.chordly.stringToSequence(sequenceString, lookup), 'sequence assigned');
+    assert.deepEqual(sequenceMap[0].matched, matched, 'matched defined');
+    assert.deepEqual(sequenceMap[0].lookup, lookup, 'lookup defined');
 
 });
 
-asyncTest('pushSequenceAndAct', 2, function () {
-    
-    var element = $('<div>'),
-        data = element.chord().data('chord'),
-        sequence = $.chord.literalStringToSequence('dog'),
+QUnit.test('pushSequenceAndAct', function (assert) {
+
+    // Arrange
+    let matchedSequence = false;
+    let eventTriggeredCounter = 0;
+
+    const element = $('<div>'),
+        data = element.chordly().data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog'),
         sequenceMapping = {
             sequence: sequence,
             matched: function () {
-                ok(true, 'matched triggered');
-                done()
+                matchedSequence = true;
             }
-        },
-        counter = 2;
+        };
 
-    function done() { --counter || start(); }
-
-    element.bind('chordMatch', function (e) {
-        ok(true, 'custom event triggered');
-        done()
+    element.bind('chordlyMatch', function (e) {
+        eventTriggeredCounter++;
     });
-    
-    element.chord('bind', sequenceMapping);
-    element.chord('pushSequenceAndAct', sequence);
-    
+
+    element.chordly('bind', sequenceMapping);
+
+    // Act
+    element.chordly('pushSequenceAndAct', sequence);
+
+    // Assert
+    assert.ok(matchedSequence, "matched sequence");
+    assert.equal(eventTriggeredCounter, 1, "custom event triggered once");
+
 });
 
-asyncTest('actOnBuffer', 2, function () {
+QUnit.test('actOnBuffer', function (assert) {
 
-    var element = $('<div>'),
-        data = element.chord().data('chord'),
-        sequence = $.chord.literalStringToSequence('dog'),
+    // Arrange
+    let matchedSequence = false;
+    let eventTriggeredCounter = 0;
+
+    const element = $('<div>'),
+        data = element.chordly().data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog'),
         sequenceMapping = {
             sequence: sequence,
             matched: function () {
-                ok(true, 'matched triggered');
-                done()
+                matchedSequence = true;
             }
-        },
-        counter = 2;
+        };
 
-    function done() { --counter || start(); }
-
-    element.bind('chordMatch', function (e) {
-        ok(true, 'custom event triggered');
-        done()
+    element.bind('chordlyMatch', function (e) {
+        eventTriggeredCounter++;
     });
 
-    element.chord('bind', sequenceMapping);
-    element.chord('pushSequence', sequence);
-    element.chord('actOnBuffer');
+    element.chordly('bind', sequenceMapping);
+    element.chordly('pushSequence', sequence);
+
+    // Act
+    element.chordly('actOnBuffer');
+
+    // Assert
+    assert.ok(matchedSequence, "matched sequence");
+    assert.equal(eventTriggeredCounter, 1, "custom event triggered once");
 
 });
 
+QUnit.test('act on all matches of same sequence', function (assert) {
 
-asyncTest('act on all matches of same sequence', 4, function () {
+    // Arrange
+    let sequenceMapping1Matched = false;
+    let sequenceMapping2Matched = false;
+    let eventTriggeredCounter = 0;
 
-    var element = $('<div>'),
-        data = element.chord().data('chord'),
-        sequence = $.chord.literalStringToSequence('dog'),
+    const element = $('<div>'),
+        data = element.chordly().data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog'),
         sequenceMapping1 = {
             sequence: sequence,
             matched: function () {
-                ok(true, 'matched triggered A');
-                done()
+                sequenceMapping1Matched = true;
             }
         },
         sequenceMapping2 = {
             sequence: sequence,
             matched: function () {
-                ok(true, 'matched triggered B');
-                done()
+                sequenceMapping2Matched = true
             }
-        },
-        counter = 4;
+        };
 
-    function done() { --counter || start(); }
-
-    element.bind('chordMatch', function (e) {
-        ok(true, 'custom event triggered');
-        done()
+    element.bind('chordlyMatch', function (e) {
+        eventTriggeredCounter++;
     });
 
-    element.chord('bind', sequenceMapping1);
-    element.chord('bind', sequenceMapping2);
-    element.chord('pushSequence', sequence);
-    element.chord('actOnBuffer');
+    element.chordly('bind', sequenceMapping1);
+    element.chordly('bind', sequenceMapping2);
 
+    // Act
+    element.chordly('pushSequence', sequence);
+    element.chordly('actOnBuffer');
+
+    // Assert
+    assert.ok(sequenceMapping1Matched, "sequence mapping 1 matched");
+    assert.ok(sequenceMapping2Matched, "sequence mapping 2 matched");
+    assert.equal(eventTriggeredCounter, 2, "custom event triggered twice");
 });
 
-asyncTest('act on all matches of alternate sequences', 4, function () {
+QUnit.test('act on all matches of alternate sequences', function (assert) {
 
-    var element = $('<div>'),
-        data = element.chord().data('chord'),
-        sequence1 = $.chord.literalStringToSequence('dog'),
+    // Arrange
+    let matchedSequence1 = false;
+    let matchedSequence2 = false;
+    let eventTriggeredCounter = 0;
+
+    const element = $('<div>'),
+        data = element.chordly().data('chordly'),
+        sequence1 = $.chordly.literalStringToSequence('dog'),
         sequenceMapping1 = {
             sequence: sequence1,
             matched: function () {
-                ok(true, 'matched triggered A');
-                done()
+                matchedSequence1 = true;
             }
         },
-        sequence2 = $.chord.literalStringToSequence('og'),
+        sequence2 = $.chordly.literalStringToSequence('og'),
         sequenceMapping2 = {
             sequence: sequence2,
             matched: function () {
-                ok(true, 'matched triggered B');
-                done()
+                matchedSequence2 = true;
             }
-        },
-        counter = 4;
+        };
 
-    function done() { --counter || start(); }
-
-    element.bind('chordMatch', function (e) {
-        ok(true, 'custom event triggered');
-        done()
+    element.bind('chordlyMatch', function (e) {
+        eventTriggeredCounter++;
     });
 
-    element.chord('bind', sequenceMapping1);
-    element.chord('bind', sequenceMapping2);
-    element.chord('pushSequence', sequence1);
-    element.chord('actOnBuffer');
+    element.chordly('bind', sequenceMapping1);
+    element.chordly('bind', sequenceMapping2);
+
+    // Act
+    element.chordly('pushSequence', sequence1);
+    element.chordly('actOnBuffer');
+
+    // Assert
+    assert.ok(matchedSequence1, "matched sequence 1");
+    assert.ok(matchedSequence2, "matched sequence 2");
+    assert.equal(eventTriggeredCounter, 2, "custom event triggered twice");
 
 });
 
-test('key event adds to buffer', function () {
+QUnit.test('key event adds to buffer', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName}).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
         keyCode = 42,
         shiftState = true,
         altState = true,
         ctrlState = true,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
-    
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
     e.ctrlKey = ctrlState;
 
     element.trigger(e);
-    deepEqual(sequenceBuffer[0], sequencePart, 'key event adds to buffer');
-    
+    assert.deepEqual(sequenceBuffer[0], sequencePart, 'key event adds to buffer');
+
 });
 
-asyncTest('key event acts', 2, function () {
+QUnit.test('key event acts', function (assert) {
 
-    function done() { --counter || start(); }
+    // Arrange
+    let eventTriggeredCounter = 0;
+    let matchedSequence = false;
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName }).data('chord'),
-        sequence = $.chord.literalStringToSequence('d'),
+        data = element.chordly({
+            keyEvent: eventName
+        }).data('chordly'),
+        sequence = $.chordly.literalStringToSequence('d'),
         sequenceMapping = {
             sequence: sequence,
             matched: function () {
-                ok(true, 'matched triggered');
-                done()
+                matchedSequence = true;
             }
-        },
-        counter = 2
+        };
 
-    element.bind('chordMatch', function (e) {
-        ok(true, 'custom event triggered');
-        done()
+    element.bind('chordlyMatch', function (e) {
+        eventTriggeredCounter++;
     });
 
-    element.chord('bind', sequenceMapping);
-    
-    e.which = $.chord.scanCodeMap['D'];
+    element.chordly('bind', sequenceMapping);
+
+    e.which = $.chordly.scanCodeMap['D'];
     e.shiftKey = false;
     e.altKey = false;
     e.ctrlKey = false;
+
+    // Act
     element.trigger(e);
 
+    // Assert
+    assert.ok(matchedSequence, "matched sequence");
+    assert.equal(eventTriggeredCounter, 1, "custom event triggered twice");
 });
 
 
-test('buffer length auto expands', function () {
+QUnit.test('buffer length auto expands', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         bufferLength = 1,
         sequenceString = 'this is a longer sequence',
         sequenceMapping = {
-            sequence: $.chord.literalStringToSequence(sequenceString),
+            sequence: $.chordly.literalStringToSequence(sequenceString),
             lookup: 'lookup',
             matched: undefined
         },
-        data = element.chord({ maxBufferLength: bufferLength, sequenceMap: [sequenceMapping] }).data('chord');
-    
-    equal(data.options.maxBufferLength, sequenceString.length, 'buffer stretched');
+        data = element.chordly({
+            maxBufferLength: bufferLength,
+            sequenceMap: [sequenceMapping]
+        }).data('chordly');
+
+    assert.equal(data.options.maxBufferLength, sequenceString.length, 'buffer stretched');
 
 });
 
-test('buffer length auto expands on bind', function () {
-    
-    var element = $('<div>'),
+QUnit.test('buffer length auto expands on bind', function (assert) {
+
+    const element = $('<div>'),
         bufferLength = 1,
         sequenceString = 'this is a longer sequence',
-        data = element.chord({ maxBufferLength: bufferLength }).data('chord'),
+        data = element.chordly({
+            maxBufferLength: bufferLength
+        }).data('chordly'),
         sequenceMapping = {
-            sequence: $.chord.literalStringToSequence(sequenceString),
+            sequence: $.chordly.literalStringToSequence(sequenceString),
             lookup: 'lookup',
             matched: undefined
         };
 
-        equal(data.options.maxBufferLength, bufferLength, 'buffer length as set');
+    assert.equal(data.options.maxBufferLength, bufferLength, 'buffer length as set');
 
-        element.chord('bind', sequenceMapping);
+    element.chordly('bind', sequenceMapping);
 
-        equal(data.options.maxBufferLength, sequenceString.length, 'buffer stretched');
+    assert.equal(data.options.maxBufferLength, sequenceString.length, 'buffer stretched');
 
 });
 
-test('buffer length pushed to maxBufferLength', function () {
+QUnit.test('buffer length pushed to maxBufferLength', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         bufferLength = 5,
-        sequence = $.chord.literalStringToSequence('a'),
-        data = element.chord({ maxBufferLength: bufferLength }).data('chord'),
-        i;
-    
-    equal(data.sequenceBuffer.length, 0, 'buffer starts at 0 size');
+        sequence = $.chordly.literalStringToSequence('a'),
+        data = element.chordly({
+            maxBufferLength: bufferLength
+        }).data('chordly');
+    let i;
+
+    assert.equal(data.sequenceBuffer.length, 0, 'buffer starts at 0 size');
 
     for (i = 0; i < bufferLength + 5; i++) {
-        element.chord('pushSequence', sequence);
+        element.chordly('pushSequence', sequence);
     }
 
-    equal(data.sequenceBuffer.length, bufferLength, 'buffer equal to max length');
+    assert.equal(data.sequenceBuffer.length, bufferLength, 'buffer equal to max length');
 
 });
 
-test('option clearBufferOnMatch true', function () {
+QUnit.test('option clearBufferOnMatch true', function (assert) {
 
-    var element = $('<div>'),
-        data = element.chord({clearBufferOnMatch: true}).data('chord'),
-        sequence = $.chord.literalStringToSequence('dog'),
-        sequenceMapping = {
-            sequence: sequence,
-        };
-    
-    element.chord('bind', sequenceMapping);
-    element.chord('pushSequenceAndAct', sequence);
-
-    equal(data.sequenceBuffer.length, 0, 'sequence buffer empty');
-
-});
-
-test('option clearBufferOnMatch false', function () {
-
-    var element = $('<div>'),
-        data = element.chord({ clearBufferOnMatch: false }).data('chord'),
-        sequence = $.chord.literalStringToSequence('dog'),
+    const element = $('<div>'),
+        data = element.chordly({
+            clearBufferOnMatch: true
+        }).data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog'),
         sequenceMapping = {
             sequence: sequence,
         };
 
-    element.chord('bind', sequenceMapping);
-    element.chord('pushSequenceAndAct', sequence);
+    element.chordly('bind', sequenceMapping);
+    element.chordly('pushSequenceAndAct', sequence);
 
-    equal(data.sequenceBuffer.length, 3, 'sequence buffer not empty');
+    assert.equal(data.sequenceBuffer.length, 0, 'sequence buffer empty');
 
 });
 
-test('option capture shift true', function () {
+QUnit.test('option clearBufferOnMatch false', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
+        data = element.chordly({
+            clearBufferOnMatch: false
+        }).data('chordly'),
+        sequence = $.chordly.literalStringToSequence('dog'),
+        sequenceMapping = {
+            sequence: sequence,
+        };
+
+    element.chordly('bind', sequenceMapping);
+    element.chordly('pushSequenceAndAct', sequence);
+
+    assert.equal(data.sequenceBuffer.length, 3, 'sequence buffer not empty');
+
+});
+
+QUnit.test('option capture shift true', function (assert) {
+
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, captureShift: true }).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName,
+            captureShift: true
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
-        keyCode = $.chord.scanCodeMap.Shift,
+        keyCode = $.chordly.scanCodeMap.Shift,
         shiftState = true,
         altState = false,
         ctrlState = false,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
 
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
@@ -1041,25 +1115,28 @@ test('option capture shift true', function () {
 
     element.trigger(e);
 
-    deepEqual(sequenceBuffer[0], sequencePart, 'key event adds shift to buffer');
+    assert.deepEqual(sequenceBuffer[0], sequencePart, 'key event adds shift to buffer');
 
 });
 
-test('option capture shift false', function () {
+QUnit.test('option capture shift false', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, captureShift: false }).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName,
+            captureShift: false
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
-        keyCode = $.chord.scanCodeMap.Shift,
+        keyCode = $.chordly.scanCodeMap.Shift,
         shiftState = true,
         altState = false,
         ctrlState = false,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
 
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
@@ -1067,25 +1144,28 @@ test('option capture shift false', function () {
 
     element.trigger(e);
 
-    equal(sequenceBuffer.length, 0, 'key event does not add shift to buffer');
+    assert.equal(sequenceBuffer.length, 0, 'key event does not add shift to buffer');
 
 });
 
-test('option capture ctrl true', function () {
+QUnit.test('option capture ctrl true', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, captureCtrl: true }).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName,
+            captureCtrl: true
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
-        keyCode = $.chord.scanCodeMap.Control,
+        keyCode = $.chordly.scanCodeMap.Control,
         shiftState = false,
         altState = false,
         ctrlState = true,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
 
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
@@ -1093,24 +1173,27 @@ test('option capture ctrl true', function () {
 
     element.trigger(e);
 
-    deepEqual(sequenceBuffer[0], sequencePart, 'key event adds ctrl to buffer');
+    assert.deepEqual(sequenceBuffer[0], sequencePart, 'key event adds ctrl to buffer');
 
 });
 
-test('option capture ctrl false', function () {
+QUnit.test('option capture ctrl false', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, captureCtrl: false }).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName,
+            captureCtrl: false
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
-        keyCode = $.chord.scanCodeMap.Control,
+        keyCode = $.chordly.scanCodeMap.Control,
         shiftState = false,
         altState = false,
         ctrlState = true,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
@@ -1118,25 +1201,28 @@ test('option capture ctrl false', function () {
 
     element.trigger(e);
 
-    equal(sequenceBuffer.length, 0, 'key event does not add ctrl to buffer');
+    assert.equal(sequenceBuffer.length, 0, 'key event does not add ctrl to buffer');
 
 });
 
-test('option capture alt true', function () {
+QUnit.test('option capture alt true', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, captureAlt: true }).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName,
+            captureAlt: true
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
-        keyCode = $.chord.scanCodeMap.Alt,
+        keyCode = $.chordly.scanCodeMap.Alt,
         shiftState = false,
         altState = true,
         ctrlState = false,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
 
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
@@ -1144,25 +1230,28 @@ test('option capture alt true', function () {
 
     element.trigger(e);
 
-    deepEqual(sequenceBuffer[0], sequencePart, 'key event adds alt to buffer');
+    assert.deepEqual(sequenceBuffer[0], sequencePart, 'key event adds alt to buffer');
 
 });
 
-test('option capture alt false', function () {
+QUnit.test('option capture alt false', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, captureAlt: false }).data('chord'),
+        data = element.chordly({
+            keyEvent: eventName,
+            captureAlt: false
+        }).data('chordly'),
         sequenceBuffer = data.sequenceBuffer,
-        keyCode = $.chord.scanCodeMap.Alt,
+        keyCode = $.chordly.scanCodeMap.Alt,
         shiftState = false,
         altState = true,
         ctrlState = false,
-        sequencePart = $.chord.makeSequencePart(keyCode, shiftState, altState, ctrlState);
+        sequencePart = $.chordly.makeSequencePart(keyCode, shiftState, altState, ctrlState);
 
 
-    equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(sequenceBuffer.length, 0, 'sequence buffer is empty');
     e.which = keyCode;
     e.shiftKey = shiftState;
     e.altKey = altState;
@@ -1170,62 +1259,68 @@ test('option capture alt false', function () {
 
     element.trigger(e);
 
-    equal(sequenceBuffer.length, 0, 'key event does not add alt to buffer');
+    assert.equal(sequenceBuffer.length, 0, 'key event does not add alt to buffer');
 
 });
 
-test('option ignoreFormElements false', function () {
+QUnit.test('option ignoreFormElements false', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         formElement = $('<input>').attr('type', 'text'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, ignoreFormElements: false }).data('chord');
+        data = element.chordly({
+            keyEvent: eventName,
+            ignoreFormElements: false
+        }).data('chordly');
 
     element.append(formElement);
-        
-    e.which = $.chord.scanCodeMap.D;
+
+    e.which = $.chordly.scanCodeMap.D;
     e.shiftKey = false;
     e.altKey = false;
     e.ctrlKey = false;
 
-    equal(data.sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(data.sequenceBuffer.length, 0, 'sequence buffer is empty');
     formElement.trigger(e);
-    equal(data.sequenceBuffer.length, 1, 'sequence buffer has been pushed to');
-        
+    assert.equal(data.sequenceBuffer.length, 1, 'sequence buffer has been pushed to');
+
 });
 
-test('option ignoreFormElements true', function () {
+QUnit.test('option ignoreFormElements true', function (assert) {
 
-    var element = $('<div>'),
+    const element = $('<div>'),
         formElement = $('<input>').attr('type', 'text'),
         eventName = 'custom_key_event',
         e = $.Event(eventName),
-        data = element.chord({ keyEvent: eventName, ignoreFormElements: true }).data('chord');
+        data = element.chordly({
+            keyEvent: eventName,
+            ignoreFormElements: true
+        }).data('chordly');
 
     element.append(formElement);
 
-    e.which = $.chord.scanCodeMap.D;
+    e.which = $.chordly.scanCodeMap.D;
     e.shiftKey = false;
     e.altKey = false;
     e.ctrlKey = false;
 
-    equal(data.sequenceBuffer.length, 0, 'sequence buffer is empty');
+    assert.equal(data.sequenceBuffer.length, 0, 'sequence buffer is empty');
     formElement.trigger(e);
-    equal(data.sequenceBuffer.length, 0, 'sequence buffer has not been pushed to');
+    assert.equal(data.sequenceBuffer.length, 0, 'sequence buffer has not been pushed to');
 
 });
 
-test('literalStringToSequence throws error on unrecognized character', function () {
-        
-    for (var i = 0; i <= 255; i++) {
+QUnit.test('literalStringToSequence throws error on unrecognized character', function (assert) {
 
-        var charString = String.fromCharCode(i);
+    for (let i = 0; i <= 255; i++) {
+
+        const charString = String.fromCharCode(i);
         if (!charString.match(/[A-Za-z0-9 ]/)) {
 
-            throws(
+            assert.throws(
                 function () {
-                    $.chord.literalStringToSequence(charString);
+                    $.chordly.literalStringToSequence(charString);
                 },
                 "raised error message on unrecognized character code " + i
             );
@@ -1234,42 +1329,42 @@ test('literalStringToSequence throws error on unrecognized character', function 
 
 });
 
-test('literalStringToSequence does not throw error on recognized character', function () {
+QUnit.test('literalStringToSequence does not throw error on recognized character', function (assert) {
 
-    for (var i = 0; i <= 255; i++) {
+    for (let i = 0; i <= 255; i++) {
 
-        var charString = String.fromCharCode(i);
+        const charString = String.fromCharCode(i);
 
         if (charString.match(/[A-Za-z0-9 ]/)) {
-            $.chord.literalStringToSequence(charString);
-            ok( true, "no raised error message on recognized character code " + i + " ('" + charString + "')");
+            $.chordly.literalStringToSequence(charString);
+            assert.ok(true, "no raised error message on recognized character code " + i + " ('" + charString + "')");
         }
     }
 
 });
 
-test('stringToSequence throws error on NaN keycode', function () {
-    throws(
+QUnit.test('stringToSequence throws error on NaN keycode', function (assert) {
+    assert.throws(
         function () {
-            $.chord.stringToSequence('[potato]');
+            $.chordly.stringToSequence('[potato]');
         },
         "raised error message on NaN keycode"
     );
 });
 
-test('stringToSequence throws error on invalid keycode', function () {
+QUnit.test('stringToSequence throws error on invalid keycode', function (assert) {
 
-    for (var i = -10; i <= 265; i++) {
+    for (let i = -10; i <= 265; i++) {
 
         if (i >= 0 && i <= 255) {
             continue;
         }
 
-        var charString = "[" + i + "]";
+        const charString = "[" + i + "]";
 
-        throws(
+        assert.throws(
             function () {
-                $.chord.stringToSequence(charString);
+                $.chordly.stringToSequence(charString);
             },
             "raised error message on keycode '" + charString + "'"
         );
@@ -1277,32 +1372,31 @@ test('stringToSequence throws error on invalid keycode', function () {
     }
 });
 
-test('stringToSequence does not throw error on valid keycode', function () {
+QUnit.test('stringToSequence does not throw error on valid keycode', function (assert) {
 
-    for (var i = 0; i <= 255; i++) {
-        var charString = "[" + i + "]";
-        $.chord.stringToSequence(charString);
-        ok(true, "no raised error message on recognized key code " + i + " ('" + charString + "')");
+    for (let i = 0; i <= 255; i++) {
+        const charString = "[" + i + "]";
+        $.chordly.stringToSequence(charString);
+        assert.ok(true, "no raised error message on recognized key code " + i + " ('" + charString + "')");
     }
 });
 
-test('stringToSequence does not throw error on recognized sequence', function () {
+QUnit.test('stringToSequence does not throw error on recognized sequence', function (assert) {
 
-    for (var item in $.chord.scanCodeMap) {
+    for (let item in $.chordly.scanCodeMap) {
 
-        $.chord.stringToSequence(item + " shift+" + item + " ctrl+" + item + " alt+" + item + " shift+ctrl+alt+" + item);
-        ok(true, "no raised error message on recognized sequence '" + item + "'");
+        $.chordly.stringToSequence(item + " shift+" + item + " ctrl+" + item + " alt+" + item + " shift+ctrl+alt+" + item);
+        assert.ok(true, "no raised error message on recognized sequence '" + item + "'");
     }
-    
+
 });
 
-test('stringToSequence throws error on unrecognized sequence', function () {
+QUnit.test('stringToSequence throws error on unrecognized sequence', function (assert) {
 
-    throws(
+    assert.throws(
         function () {
-            $.chord.stringToSequence('Potato');
-        },
-        "raised error message on unrecognized sequence"
+            $.chordly.stringToSequence('Potato');
+        }, "raised error message on unrecognized sequence"
     );
 
 });

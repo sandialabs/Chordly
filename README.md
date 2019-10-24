@@ -1,234 +1,261 @@
-#About
+# About
 
-jQuery.Chord is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chord up to listen for key sequences, known as chords, entered by a user.
+chordly is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chordly up to listen for key sequences, known as chords, entered by a user.
 
-Chord was inspired by John Resig's [jQuery.hotkeys](https://github.com/jeresig/jquery.hotkeys). Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chord.
+Chordly was inspired by John Resig's [jQuery.hotkeys](https://github.com/jeresig/jquery.hotkeys). Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chordly.
 
 A proud supporter of #mousehate
 
-##Features
+## Features
 
- - Trigger events on single, or multiple key presses. Includes Shift, Alt, and Control options
- - Cross browser compatibility
- - Custom 'chordMatch' event that may be listened for by user code
- - Optionally ignore input on form elements
- - Storage of user readable buffer of key presses
- - Pause and Re-Start key capturing and event firing
- - Optional automatic timeout of key buffering
- - Optional Greedy matching
- - Multiple instances allowed on a single page
- - Extensible jQuery like definition of javascript code
- - ...
+- Trigger events on single, or multiple key presses. Includes Shift, Alt, and Control options
+- Cross browser compatibility
+- Custom 'chordlyMatch' event that may be listened for by user code
+- Optionally ignore input on form elements
+- Storage of user readable buffer of key presses
+- Pause and Re-Start key capturing and event firing
+- Optional automatic timeout of key buffering
+- Optional Greedy matching
+- Multiple instances allowed on a single page
+- Extensible jQuery like definition of javascript code
+- ...
 
+## Usage
 
-#Usage
+Chordly may be attached to any DOM node in order to listen for sequences of keyboard activity within that node and its descendants. In its simplest form Chordly can be enabled like this:
 
-Chord may be attached to any DOM node in order to listen for sequences of keyboard activity within that node and its descendants. In its simplest form Chord can be enabled like this:
+```js
+$(expression).chordly("bindLiteralSequence", "hello", function() {
+  console.log("world");
+});
+```
 
-    $(expression).chord('bindLiteralSequence', 'hello', function () { console.log('world') });
+### Advanced Usage
 
-##Advanced Usage
+_Also, be sure to check out the **Code Snippet** section below that contains useful examples and hints_
 
-*Also, be sure to check out the **Code Snippet** section below that contains useful  examples and hints*
+While the above is great for simple keyboard input it is Chordly's more advance uses where it begins to sing. Chordly offers a variety of configuration options and makes it easy to handle a number of key sequences with a single configuration. A more advanced form of the above would look likes this:
 
-While the above is great for simple keyboard input it is Chord's more advance uses where it begins to sing. Chord offers a variety of configuration options and makes it easy to handle a number of key sequences with a single configuration. A more advanced form of the above would look likes this:
-
-    $(expression).chord({
-        sequenceMap: [{
-            sequence: $.chord.literalStringToSequence('hello'),
-            matched: function () {
-                console.log('world')
-            }
-        }]
-    });
+```js
+$(expression).chordly({
+  sequenceMap: [
+    {
+      sequence: $.chordly.literalStringToSequence("hello"),
+      matched: function() {
+        console.log("world");
+      }
+    }
+  ]
+});
+```
 
 Which admittedly looks unnecessarily more complicated until you realize it allows you to do things like this:
 
-    $(expression).chord('bind', [{
-        sequence: $.chord.literalStringToSequence('mouse'),
-        matched: function () {
-            console.log('squeak!')
-        }
-    }, {
-        sequence: [
-        $.chord.literalStringToSequence('cow'),
-        $.chord.literalStringToSequence('bull'), ],
-        matched: function () {
-            console.log('moo!')
-        }
-    }]);
+```js
+$(expression).chordly("bind", [
+  {
+    sequence: $.chordly.literalStringToSequence("mouse"),
+    matched: function() {
+      console.log("squeak!");
+    }
+  },
+  {
+    sequence: [
+      $.chordly.literalStringToSequence("cow"),
+      $.chordly.literalStringToSequence("bull")
+    ],
+    matched: function() {
+      console.log("moo!");
+    }
+  }
+]);
+```
 
+### Options
 
-##Options
-In the above examples we are making use of Chord's `options` object which may contain the following, otherwise defaults are used:
+In the above examples we are making use of Chordly's `options` object which may contain the following, otherwise defaults are used:
 
 - **captureShift** `(bool)` default: `[false]`
-Treat shift as a key press. 
+  Treat shift as a key press.
 
 - **captureAlt** `(bool)` default: `[false]`
-Treat alt as a key press.
+  Treat alt as a key press.
 
 - **captureCtrl** `(bool)` default: `[false]`
-Treat ctrl as a key press.        
+  Treat ctrl as a key press.
 
 - **ignoreFormElements** `(bool)` default: `[true]`
-Ignore key presses within form elements
+  Ignore key presses within form elements
 
 - **keyEvent** `(string)` default: `[keyup]`
-the key event that triggers listening. other options are keydown (or any event that stores the key code *not ASCII char code* within the 'which' property of the event)
+  the key event that triggers listening. other options are keydown (or any event that stores the key code _not ASCII char code_ within the 'which' property of the event)
 
 - **maxBufferLength** `(int)` default: `[5]`
-the length of the key buffer. Note that the buffer will be auto expanded in order to maintain at minimum the length of the longest sequence to be detected. Modifying this allows for a greater depth of key press history to be kept if desired
+  the length of the key buffer. Note that the buffer will be auto expanded in order to maintain at minimum the length of the longest sequence to be detected. Modifying this allows for a greater depth of key press history to be kept if desired
 
 - **clearBufferOnMatch** `(bool)` default: `[true]`
-determines if the key buffer should be cleared on a match
+  determines if the key buffer should be cleared on a match
 
 - **paused** `(bool)` default: `[false]`
-determines if chord on the element should start paused (not collecting key)
+  determines if chordly on the element should start paused (not collecting key)
 
 - **bufferTimeoutMs** `(int)` default: `[0]`
-timeout length for key buffer clearing in ms (value of <1 means no timeout)
+  timeout length for key buffer clearing in ms (value of <1 means no timeout)
 
 - **greedyTimeoutMs** `(int)` default: `[0]`
-timeout length since last recording of a key press before executing a match event. This is reset by next key press. (value of <1 means no greedy matching)
+  timeout length since last recording of a key press before executing a match event. This is reset by next key press. (value of <1 means no greedy matching)
 
 - **sequenceMap** `(object array)` default: `[empty array]`
-an array of objects defining sequence mapping. Defaults to an empty array. Mapping object may have the following attributes
+  an array of objects defining sequence mapping. Defaults to an empty array. Mapping object may have the following attributes
 
- - **sequence** - a sequence, array of sequences, or array of sequence parts
-to create a sequence from a string use
-`$.chord.literalStringToSequence(str)`
-or to create a part use
-`$.chord.makeSequencePart(keyCode, shift, alt, ctrl)`
+- **sequence** - a sequence, array of sequences, or array of sequence parts
+  to create a sequence from a string use
+  `$.chordly.literalStringToSequence(str)`
+  or to create a part use
+  `$.chordly.makeSequencePart(keyCode, shift, alt, ctrl)`
 
- - **matched** - optional function that will be called on sequence completion
+- **matched** - optional function that will be called on sequence completion
 
- - **lookup** - optional lookup code that will be passed to the custom `chordMatch` event on sequence completion
+- **lookup** - optional lookup code that will be passed to the custom `chordlyMatch` event on sequence completion
 
-##Methods
+### Methods
 
 - **clearSequenceBuffer**
-clear the sequence buffer, effectively resetting the memory of previously pressed keys
-`$(expression).chord('clearSequenceBuffer')`
+  clear the sequence buffer, effectively resetting the memory of previously pressed keys
+  `$(expression).chordly('clearSequenceBuffer')`
 
 - **destroy**
-destroy the chord instance unbinding events and removing data from element
-`$(expression).chord('destroy')`
+  destroy the chordly instance unbinding events and removing data from element
+  `$(expression).chordly('destroy')`
 
 - **pause**
-pause the chord instance
-`$(expression).chord('pause')`
+  pause the chordly instance
+  `$(expression).chordly('pause')`
 
 - **resume**
-resume the chord instance
-`$(expression).chord('resume')`
+  resume the chordly instance
+  `$(expression).chordly('resume')`
 
 - **togglePause**
-pause/resume chord instance if was unpaused/paused
-`$(expression).chord('togglePause')`
+  pause/resume chordly instance if was unpaused/paused
+  `$(expression).chordly('togglePause')`
 
 - **bind(args)**
-bind new sequence(s)
-args[0] array of sequence/lookup/matched objects to add to the sequenceMap
+  bind new sequence(s)
+  args[0] array of sequence/lookup/matched objects to add to the sequenceMap
 
-        $(expression).chord('bind', {
-            sequence: $.chord.literalStringToSequence('mouse'),
-            matched: function () {
-                console.log('squeak!')
-            }
-        });
+          $(expression).chordly('bind', {
+              sequence: $.chordly.literalStringToSequence('mouse'),
+              matched: function () {
+                  console.log('squeak!')
+              }
+          });
 
 - **unbind(args)**
-unbind each occurrence of a sequence
-args[0] the sequence to unbind
-`$(expression).chord('unbind', $.chord.literalStringToSequence('mouse'));`
+  unbind each occurrence of a sequence
+  args[0] the sequence to unbind
+  `$(expression).chordly('unbind', $.chordly.literalStringToSequence('mouse'));`
 
 - **actOnBuffer**
-act on data in buffer as if a listen event has occurred
-`$(expression).chord('actOnBuffer')`
+  act on data in buffer as if a listen event has occurred
+  `$(expression).chordly('actOnBuffer')`
 
 - **pushSequence(args)**
-push a sequence onto the buffer. Not that this will not cause a listen to be fired. You must call actOnBuffer if a reaction is desired. To push and act on buffer call pushSequenceAndAct
-args[0] sequence to push (array of sequence parts)
-`$(expression).chord('pushSequence', $.chord.literalStringToSequence('dog'))`
+  push a sequence onto the buffer. Not that this will not cause a listen to be fired. You must call actOnBuffer if a reaction is desired. To push and act on buffer call pushSequenceAndAct
+  args[0] sequence to push (array of sequence parts)
+  `$(expression).chordly('pushSequence', $.chordly.literalStringToSequence('dog'))`
 
 - **pushSequenceAndActOnBuffer(args)**
-push a sequence onto the buffer and act upon it
-args[0] sequence to push (array of sequence parts)
-`$(expression).chord('pushSequenceAndAct', $.chord.literalStringToSequence('dog'))`
+  push a sequence onto the buffer and act upon it
+  args[0] sequence to push (array of sequence parts)
+  `$(expression).chordly('pushSequenceAndAct', $.chordly.literalStringToSequence('dog'))`
 
-##Events
-Chord also makes available a custom 'chordMatch' event. This event object will contain the following NEW properties:
+### Events
+
+Chordly also makes available a custom 'chordlyMatch' event. This event object will contain the following NEW properties:
 
 - **originalEvent** - the original triggering event event
 - **lookup** - the lookup as defined in the sequence map
 - **sequence** - the sequence that triggered the event
 - **sequenceString** - the triggering sequence as a string
 
-Below is an example of a handler of the chordMatch event.
+Below is an example of a handler of the chordlyMatch event.
 
-    $(expression).on('chordMatch', function (e) {
-        console.log('chordMatch event:');
-        console.log('\t event:', e);
-        console.log('\t lookup:', e.lookup);
-        console.log('\t sequence:', e.sequence);
-        console.log('\t sequenceString:', e.sequenceString);
-        console.log('\t originalEvent:', e.originalEvent);
-    });
-    
-    
-#Code Snippets
+```js
+$(expression).on("chordlyMatch", function(e) {
+  console.log("chordlyMatch event:");
+  console.log("\t event:", e);
+  console.log("\t lookup:", e.lookup);
+  console.log("\t sequence:", e.sequence);
+  console.log("\t sequenceString:", e.sequenceString);
+  console.log("\t originalEvent:", e.originalEvent);
+});
+```
 
-The Sky is the limit with Chord, or at the very least the keyboard. The following are some code examples of how chord may be used to make interacting with your website better.
+### Code Snippets
 
-##Konami Code
+The Sky is the limit with Chordly, or at the very least the keyboard. The following are some code examples of how chordly may be used to make interacting with your website better.
+
+#### Konami Code
 
 This example fires of an method, in this case an alert stating "Konami Code!", when the Konami Code is entered.
 
     $(document).ready(function () {
-        $(document).chord('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
+        $(document).chordly('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
     });
 
-#Page Redirection
+#### Page Redirection
 
-This example shows how chord definition may be chained to have key presses of G then H, G then F, and G then A redirect the browser to home.html, faq.html, and about.html respectively
+This example shows how chordly definition may be chained to have key presses of G then H, G then F, and G then A redirect the browser to home.html, faq.html, and about.html respectively
 
-    $(document).ready(function () {
-        $(document).chord('bindSequence', 'G H', function() { window.location = 'home.html'; })
-            .chord('bindSequence', 'G F', function() { window.location = 'faq.html'; });
-            .chord('bindSequence', 'G A', function() { window.location = 'about.html'; });
-    });
+```js
+$(document).ready(function () {
+    $(document).chordly('bindSequence', 'G H', function() { window.location = 'home.html'; })
+        .chordly('bindSequence', 'G F', function() { window.location = 'faq.html'; });
+        .chordly('bindSequence', 'G A', function() { window.location = 'about.html'; });
+});
+```
 
+#### Greedy Sequence Matching
 
-##Greedy Sequence Matching
+This example shows how Chordly may be set up so that it will attempt to match on the longest possible key entry before defaulting to a smaller defined one. In this case entering 'cows' will not trigger the 'cow' event, yet both may still be fired.
 
-This example shows how Chord may be set up so that it will attempt to match on the longest possible key entry before defaulting to a smaller defined one. In this case entering 'cows' will not trigger the 'cow' event, yet both may still be fired.
+```js
+$(document).ready(function() {
+  var $document = $(this);
+  $document.chordly({
+    bufferTimeoutMs: 400, // buffer auto-clears after 400 ms
+    greedyTimeoutMs: 225 // wait 225 ms for more keys before declaring a match
+  });
+  $document.chordly("bindSequence", "C O W", function() {
+    alert("one cow: Moo!");
+  });
+  $document.chordly("bindSequence", "C O W S", function() {
+    alert("two cows: Moo! Moo!");
+  });
+});
+```
 
+#### On Screen 'J/K' Style Navigation
 
-    $(document).ready(function () {
-       var $document = $(this); 
-       
-       $document.chord(
-        { 
-            bufferTimeoutMs: 400, // buffer auto-clears after 400 ms
-            greedyTimeoutMs: 225 // wait 225 ms for more keys before declaring a match
-        });
-        
-        
-        $document.chord('bindSequence', 'C O W', function() {
-            alert("one cow: Moo!");
-        });
-        
-        $document.chord('bindSequence', 'C O W S', function() {
-            alert("two cows: Moo! Moo!");
-        });        
-       
-    });
+This is an example snippet of how chordly can be used to accomplish J/K style navigation on a web page. J and K buttons may be used to optionally navigate tags marked with the 'data-selectable' attribute. Once selected a pressing the Enter key activates the link associated with the current item.
 
+_see [chordly example of J/K navigation Gist](docs/jknavigation.md)_
 
-##On Screen 'J/K' Style Navigation
+## Copyright
 
-This is an example snippet of how jQuery.Chord can be used to accomplish J/K style navigation on a web page. J and K buttons may be used to optionally navigate tags marked with the 'data-selectable'  attribute. Once selected a pressing the Enter key activates the link associated with the current item.
+> Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S. Government retains certain rights in this software.
 
-*see [jQuery Chord example of J/K navigation Gist](https://gist.github.com/rheone/995a97b6e076b044dfba)*
+## License
 
+> Licensed under the Apache License, Version 2.0 (the "License");
+> you may not use this file except in compliance with the License.
+> You may obtain a copy of the License at
+>
+>       http://www.apache.org/licenses/LICENSE-2.0
+>
+> Unless required by applicable law or agreed to in writing, software
+> distributed under the License is distributed on an "AS IS" BASIS,
+> WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+> See the License for the specific language governing permissions and
+> limitations under the License.
