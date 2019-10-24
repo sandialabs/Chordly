@@ -18,8 +18,7 @@
     "url": "http://twitter.com/rheone",
     "email": "rheone@gmail.com"
   },
-  "maintainers": [
-        {
+  "maintainers": [{
       "name": "Robert Engelhardt",
       "url": "http://twitter.com/rheone",
       "email": "rheone@gmail.com"
@@ -30,12 +29,10 @@
       "email": "ahsteele@gmail.com"
     }
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://opensource.org/licenses/MIT"
-    }
-  ],
+  "licenses": [{
+    "type": "Apache-2.0",
+    "url": "https://www.apache.org/licenses/LICENSE-2.0"
+  }],
   "bugs": "https://github.com/rheone/jquery.chord/issues",
   "homepage": "https://github.com/rheone/jquery.chord",
   "docs": "https://github.com/rheone/jquery.chord",
