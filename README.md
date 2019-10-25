@@ -144,12 +144,14 @@ In the above examples we are making use of Chordly's `options` object which may 
   bind new sequence(s)
   args[0] array of sequence/lookup/matched objects to add to the sequenceMap
 
+```js
           $(expression).chordly('bind', {
               sequence: $.chordly.literalStringToSequence('mouse'),
               matched: function () {
                   console.log('squeak!')
               }
           });
+```
 
 - **unbind(args)**
   unbind each occurrence of a sequence
@@ -199,10 +201,11 @@ The Sky is the limit with Chordly, or at the very least the keyboard. The follow
 #### Konami Code
 
 This example fires of an method, in this case an alert stating "Konami Code!", when the Konami Code is entered.
-
-    $(document).ready(function () {
-        $(document).chordly('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
-    });
+```js
+$(document).ready(function () {
+    $(document).chordly('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
+});
+```
 
 #### Page Redirection
 
@@ -211,7 +214,7 @@ This example shows how chordly definition may be chained to have key presses of 
 ```js
 $(document).ready(function () {
     $(document).chordly('bindSequence', 'G H', function() { window.location = 'home.html'; })
-        .chordly('bindSequence', 'G F', function() { window.location = 'faq.html'; });
+        .chordly('bindSequence', 'G F', function() { window.location = 'faq.html'; })
         .chordly('bindSequence', 'G A', function() { window.location = 'about.html'; });
 });
 ```
