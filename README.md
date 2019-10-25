@@ -145,12 +145,12 @@ In the above examples we are making use of Chordly's `options` object which may 
   args[0] array of sequence/lookup/matched objects to add to the sequenceMap
 
 ```js
-          $(expression).chordly('bind', {
-              sequence: $.chordly.literalStringToSequence('mouse'),
-              matched: function () {
-                  console.log('squeak!')
-              }
-          });
+$(expression).chordly('bind', {
+    sequence: $.chordly.literalStringToSequence('mouse'),
+    matched: function () {
+        console.log('squeak!')
+    }
+});
 ```
 
 - **unbind(args)**
