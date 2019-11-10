@@ -1,4 +1,4 @@
-Hello, and welcome! Thanks you for your contribution to **Arcus**.
+Hello, and welcome! Thanks you for your contribution to **Chordly**.
 
 1. Please let us know about the contribution you are making
    - [ ] Does this contribution update documentation?
