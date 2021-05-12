@@ -1,221 +1,223 @@
 <html>
-	<head>
-		<title>chordly</title>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.3.min.js"></script>    
-		<script type="text/javascript" src="chordly.js"></script>
-		<script type="text/javascript">  
-			
-			$(document).ready(function () {
+<head>
+	<title>chordly</title>
+	<script type="text/javascript" src="../js/chordly.js"></script>
+	<script type="text/javascript">
 
-				$(document).chordly(
+		document.addEventListener("DOMContentLoaded", function () {
+
+			const bodyElement = document.querySelector('body');
+
+			bodyElement.pushToChordly(
 					{
-					    maxBufferLength: 5,
-					    greedyTimeoutMs: 250,
+						maxBufferLength: 5,
+						greedyTimeoutMs: 250,
 						sequenceMap:
-							[
-								{
-									sequence: [
-										$.chordly.literalStringToSequence('dog'),
-										$.chordly.literalStringToSequence('wolf'),
-									],
-									matched: function () { console.log('bark!') }
-								},
-								{
-									sequence: [$.chordly.literalStringToSequence('nada')],
-									lookup: 'nothing'
-								},
-								{
-									sequence: [$.chordly.literalStringToSequence('zero')],
-								},
-								{
-									sequence: [
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.UpArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.UpArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.DownArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.DownArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.LeftArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.RightArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.LeftArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.RightArrow),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.B),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.A),
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.Space),
-									],
-									matched: function () { console.log('cheat codes!') }
-								},
-								{
-									sequence: $.chordly.stringToSequence('shift+U shift+alt+P')
-								},
-								{
-									sequence: $.chordly.stringToSequence('U !shift+P')
-								},
-								{
-									sequence: $.chordly.stringToSequence('[66] A [84]'), // B A T
-									matched: function () { console.log('na na na na na') }
-								},
-								{
-									sequence: [
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.Q, null, null, true),
-									],
-									matched: function () { console.log('ctrl + (q | Q)!') }
-								},
-								{
-									sequence: [
-										$.chordly.makeSequencePart($.chordly.scanCodeMap.H, true, null, false),
-									],
-									matched: function () { console.log('shift + H!') }
-								},
+								[
+									{
+										sequence: [
+											window.chordly.literalStringToSequence('dog'),
+											window.chordly.literalStringToSequence('wolf'),
+										],
+										matched: function () { console.log('bark!') }
+									},
+									{
+										sequence: [window.chordly.literalStringToSequence('nada')],
+										lookup: 'nothing'
+									},
+									{
+										sequence: [window.chordly.literalStringToSequence('zero')],
+									},
+									{
+										sequence: [
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.UpArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.UpArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.DownArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.DownArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.LeftArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.RightArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.LeftArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.RightArrow),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.B),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.A),
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.Space),
+										],
+										matched: function () { console.log('cheat codes!') }
+									},
+									{
+										sequence: window.chordly.stringToSequence('shift+U shift+alt+P')
+									},
+									{
+										sequence: window.chordly.stringToSequence('U !shift+P')
+									},
+									{
+										sequence: window.chordly.stringToSequence('[66] A [84]'), // B A T
+										matched: function () { console.log('na na na na na') }
+									},
+									{
+										sequence: [
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.Q, null, null, true),
+										],
+										matched: function () { console.log('ctrl + (q | Q)!') }
+									},
+									{
+										sequence: [
+											window.chordly.makeSequencePart(window.chordly.scanCodeMap.H, true, null, false),
+										],
+										matched: function () { console.log('shift + H!') }
+									},
 
-							]
+								]
 					}
-				)
-				.on('chordlyMatch', function (e) {
-					console.log('chordlyMatch event:');
-					console.log('\t event:', e);
-					console.log('\t lookup:', e.lookup);
-					console.log('\t sequence:', e.sequence);
-					console.log('\t sequenceString:', e.sequenceString);
-					console.log('\t originalEvent:', e.originalEvent);
-				});
-				
-				$(document).chordly('bind', [{
-				    sequence: $.chordly.literalStringToSequence('mouse'),
-				    matched: function () { console.log('squeak!') }
-				},
-				{
-				    sequence: [
-						$.chordly.literalStringToSequence('cow'),
-						$.chordly.literalStringToSequence('bull'),
-				    ],
-				    matched: function () { console.log('moo!') }
-				}]);
-				
-				$(document).chordly('bind',
-				{
-					sequence: $.chordly.literalStringToSequence('wolf'),
-					matched: function () { console.log('howl!') }
-				});
-			
-				$(document).chordly('bindSequence', 'J A C K', function () { console.log('pop!') }, 'jack in the box');
-				$(document).chordly('bindLiteralSequence', 'chicken');
+			);
 
-				$(document).chordly('bindLiteralSequence', 'pig', function () { console.log('oink') });
-				$(document).chordly('bindLiteralSequence', 'pigs', function () { console.log('oink oink squeal') });
-                
-				$('.initialInputs').chordly(
+			bodyElement.addEventListener('chordlyMatch', function (e) {
+				console.log('chordlyMatch event:');
+				console.log('\t event:', e);
+				console.log('\t lookup:', e.lookup);
+				console.log('\t sequence:', e.sequence);
+				console.log('\t sequenceString:', e.sequenceString);
+				console.log('\t originalEvent:', e.originalEvent);
+			});
+
+			bodyElement.pushToChordly('bind', [{
+				sequence: window.chordly.literalStringToSequence('mouse'),
+				matched: function () { console.log('squeak!') }
+			},
+				{
+					sequence: [
+						window.chordly.literalStringToSequence('cow'),
+						window.chordly.literalStringToSequence('bull'),
+					],
+					matched: function () { console.log('moo!') }
+				}]);
+
+			bodyElement.pushToChordly('bind',
 					{
-						ignoreFormElements: false,
-						sequenceMap:
+						sequence: window.chordly.literalStringToSequence('wolf'),
+						matched: function () { console.log('howl!') }
+					});
+
+			bodyElement.pushToChordly('bindSequence', 'J A C K', function () { console.log('pop!') }, 'jack in the box');
+			bodyElement.pushToChordly('bindLiteralSequence', 'chicken');
+
+			bodyElement.pushToChordly('bindLiteralSequence', 'pig', function () { console.log('oink') });
+			bodyElement.pushToChordly('bindLiteralSequence', 'pigs', function () { console.log('oink oink squeal') });
+
+			const initialInputs = document.querySelectorAll('.initialInputs');
+
+			initialInputs.forEach(ip => {
+				ip.pushToChordly({
+					ignoreFormElements: false,
+					sequenceMap:
 							[
 								{
-									sequence: $.chordly.literalStringToSequence('duck'),
+									sequence: window.chordly.literalStringToSequence('duck'),
 									matched: function () { console.log('quack!') }
 								},
 								{
-									sequence: $.chordly.literalStringToSequence('man'),
+									sequence: window.chordly.literalStringToSequence('man'),
 									matched: function () { console.log('hello!') }
 								},
 							]
-					}
-				).on('chordlyMatch', function (e, lookup, sequence, kbEvent) {
-					console.log('man or duck');
 				});
-				
-				$('#adiv').chordly(
+				ip.addEventListener('chordlyMatch', () => console.log('man or duck'))
+			});
+
+			document.querySelector('#adiv').pushToChordly(
 					{
 						keyEvent: 'keydown',
 						ignoreFormElements: false,
 						sequenceMap:
-							[
-								{
-									sequence: $.chordly.literalStringToSequence('cat'),
-									matched: function () { console.log('meow!') }
-								}
-							]
+								[
+									{
+										sequence: window.chordly.literalStringToSequence('cat'),
+										matched: function () { console.log('meow!') }
+									}
+								]
 					}
-				);
-				
-				$('#pause').on('click', function () { $(document).chordly('pause') });
-				$('#resume').on('click', function () { $(document).chordly('resume') });
-				$('#toggle').on('click', function () { $(document).chordly('togglePause') });
+			);
 
-				$('#destroy').on('click', function () { $(document).chordly('destroy') });
+			document.querySelector('#pause').addEventListener('click', function () { bodyElement.pushToChordly('pause') });
+			document.querySelector('#resume').addEventListener('click', function () { bodyElement.pushToChordly('resume') });
+			document.querySelector('#toggle').addEventListener('click', function () { bodyElement.pushToChordly('togglePause') });
 
-				$('#pushDog').on('click', function () {
-					$(document).chordly('pushSequence', $.chordly.literalStringToSequence('dog'));
-				});
+			document.querySelector('#destroy').addEventListener('click', function () { bodyElement.pushToChordly('destroy') });
 
-				$('#pushDogAndAct').on('click', function () {
-					$(document).chordly('pushSequenceAndAct', $.chordly.literalStringToSequence('dog'));
-				});
-
-				$('#actOnBuffer').on('click', function () {
-					$(document).chordly('actOnBuffer');
-				});
-
-
-				$('#unbindDog').on('click', function () {
-					$(document).chordly('unbind', $.chordly.literalStringToSequence('dog'));
-				});
-				
-
+			document.querySelector('#pushDog').addEventListener('click', function () {
+				bodyElement.pushToChordly('pushSequence', window.chordly.literalStringToSequence('dog'));
 			});
-		</script>  
-	</head>
-	<body>
-	
-		<p>
-			Type 'dog' (case insensitive) within this page and the console will bark at you.
-			Note that form inputs are ignored for this event, so typing 'dog' will not trigger a bark
-		</p>
 
-		<p>
-			Ctrl + Q (case insensitive) will trigger a console write
-			Shift + H (case sensitive) will trigger a console write
-		</p>
-        
-        <p>
-            Greedy pattern matching: both "pig" or "pigs" may be defined to fire an event but triggering "pigs" will not trigger "pig"
-        </p>
-		
-		<fieldset>
-			<legend>A man and his duck</legend>
+			document.querySelector('#pushDogAndAct').addEventListener('click', function () {
+				bodyElement.pushToChordly('pushSequenceAndAct', window.chordly.literalStringToSequence('dog'));
+			});
 
-			<p>
-				enter 'man' or 'duck' in either of these inputs and the console will respond accordingly
-				(the event is attached to inputs within this div by class selector)
-			</p>
+			document.querySelector('#actOnBuffer').addEventListener('click', function () {
+				bodyElement.pushToChordly('actOnBuffer');
+			});
 
-			<input id="input1" class="initialInputs" placeholder="a man, or a duck" />
-			<br />
-			<textarea id="input2" class="initialInputs" placeholder="a man, or a duck"></textarea>
-		</fieldset>
-	
-		<div id="adiv" style="border: 1px solid green">
 
-			<p>
-				the event is attached to the green div, typing 'CAT' (case sensitive) within (when in focus via the inputs) will make the console meow at you
-			</p>
+			document.querySelector('#unbindDog').addEventListener('click', function () {
+				bodyElement.pushToChordly('unbind', window.chordly.literalStringToSequence('dog'));
+			});
 
-			<input id="input3" placeholder="Felix"/>
-			<input id="Text1" placeholder="Garfield"/>
-			<input id="Text2" placeholder="Tom"/>
+		});
+	</script>
+</head>
+<body>
 
-		</div>
+<p>
+	Type 'dog' (case insensitive) within this page and the console will bark at you.
+	Note that form inputs are ignored for this event, so typing 'dog' will not trigger a bark
+</p>
 
-		<a href="#" id="pause">Pause document chordly</a><br/>
-		<a href="#" id="resume">Resume document chordly</a><br/>
-		<a href="#" id="toggle">Toggle document chordly</a><br/>
+<p>
+	Ctrl + Q (case insensitive) will trigger a console write
+	Shift + H (case sensitive) will trigger a console write
+</p>
 
-		<a href="#" id="destroy">destroy document chordly</a><br/>
+<p>
+	Greedy pattern matching: both "pig" or "pigs" may be defined to fire an event but triggering "pigs" will not trigger "pig"
+</p>
 
-		<a href="#" id="pushDog">push D O G</a><br/>
-		<a href="#" id="actOnBuffer">actOnBuffer</a><br/>
+<fieldset>
+	<legend>A man and his duck</legend>
 
-		<a href="#" id="pushDogAndAct">push D O G and act</a><br/>
-		
-		<a href="#" id="unbindDog">unbind D O G</a><br/>
+	<p>
+		enter 'man' or 'duck' in either of these inputs and the console will respond accordingly
+		(the event is attached to inputs within this div by class selector)
+	</p>
 
-	</body>
+	<input id="input1" class="initialInputs" placeholder="a man, or a duck" />
+	<br />
+	<textarea id="input2" class="initialInputs" placeholder="a man, or a duck"></textarea>
+</fieldset>
+
+<div id="adiv" style="border: 1px solid green">
+
+	<p>
+		the event is attached to the green div, typing 'CAT' (case sensitive) within (when in focus via the inputs) will make the console meow at you
+	</p>
+
+	<input id="input3" placeholder="Felix"/>
+	<input id="Text1" placeholder="Garfield"/>
+	<input id="Text2" placeholder="Tom"/>
+
+</div>
+
+<a href="#" id="pause">Pause document chordly</a><br/>
+<a href="#" id="resume">Resume document chordly</a><br/>
+<a href="#" id="toggle">Toggle document chordly</a><br/>
+
+<a href="#" id="destroy">destroy document chordly</a><br/>
+
+<a href="#" id="pushDog">push D O G</a><br/>
+<a href="#" id="actOnBuffer">actOnBuffer</a><br/>
+
+<a href="#" id="pushDogAndAct">push D O G and act</a><br/>
+
+<a href="#" id="unbindDog">unbind D O G</a><br/>
+
+</body>
 
 </html>
