@@ -1,6 +1,6 @@
 # About
 
-chordly is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chordly up to listen for key sequences, known as chords, entered by a user.
+chordly is a plug-in library that lets you detect and act upon user keyboard input. This is accomplished by wiring Chordly up to listen for key sequences, known as chords, entered by a user.
 
 Chordly was inspired by John Resig's [jQuery.hotkeys](https://github.com/jeresig/jquery.hotkeys). Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chordly.
 
@@ -17,7 +17,6 @@ A proud supporter of #mousehate
 - Optional automatic timeout of key buffering
 - Optional Greedy matching
 - Multiple instances allowed on a single page
-- Extensible jQuery like definition of javascript code
 - ...
 
 ## Usage
