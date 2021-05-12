@@ -1,5 +1,5 @@
 #Example J/K Navigation
-This is an example snippet of how chordlyly can be used to accomplish J/K style navigation on a web page. `J` and `K` buttons may be used to optionally navigate tags marked with the `data-selectable` attribute. Once selected a pressing the `Enter` activates the link associated with the current item.
+This is an example snippet of how chordly can be used to accomplish J/K style navigation on a web page. `J` and `K` buttons may be used to optionally navigate tags marked with the `data-selectable` attribute. Once selected a pressing the `Enter` activates the link associated with the current item.
 
 ```
 <html>
