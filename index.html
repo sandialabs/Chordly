@@ -1,13 +1,14 @@
 <html>
 	<head>
 		<title>chord</title>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>    
-		<script type="text/javascript" src="jQuery.chord.js"></script>
-		<script type="text/javascript">  
-			
-			$(document).ready(function () {
+		<script type="text/javascript" src="./js/chordly.js"></script>
+		<script type="text/javascript">
 
-				$(document).chord(
+			document.addEventListener("DOMContentLoaded", function () {
+
+				const bodyElement = document.querySelector('body');
+
+				bodyElement.pushToChordly(
 					{
 					    maxBufferLength: 5,
 					    greedyTimeoutMs: 250,
@@ -15,62 +16,62 @@
 							[
 								{
 									sequence: [
-										$.chord.literalStringToSequence('dog'),
-										$.chord.literalStringToSequence('wolf'),
+										window.chordly.literalStringToSequence('dog'),
+										window.chordly.literalStringToSequence('wolf'),
 									],
 									matched: function () { console.log('bark!') }
 								},
 								{
-									sequence: [$.chord.literalStringToSequence('nada')],
+									sequence: [window.chordly.literalStringToSequence('nada')],
 									lookup: 'nothing'
 								},
 								{
-									sequence: [$.chord.literalStringToSequence('zero')],
+									sequence: [window.chordly.literalStringToSequence('zero')],
 								},
 								{
 									sequence: [
-										$.chord.makeSequencePart($.chord.scanCodeMap.UpArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.UpArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.DownArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.DownArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.LeftArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.RightArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.LeftArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.RightArrow),
-										$.chord.makeSequencePart($.chord.scanCodeMap.B),
-										$.chord.makeSequencePart($.chord.scanCodeMap.A),
-										$.chord.makeSequencePart($.chord.scanCodeMap.Space),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.UpArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.UpArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.DownArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.DownArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.LeftArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.RightArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.LeftArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.RightArrow),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.B),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.A),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.Space),
 									],
 									matched: function () { console.log('cheat codes!') }
 								},
 								{
-									sequence: $.chord.stringToSequence('shift+U shift+alt+P')
+									sequence: window.chordly.stringToSequence('shift+U shift+alt+P')
 								},
 								{
-									sequence: $.chord.stringToSequence('U !shift+P')
+									sequence: window.chordly.stringToSequence('U !shift+P')
 								},
 								{
-									sequence: $.chord.stringToSequence('[66] A [84]'), // B A T
+									sequence: window.chordly.stringToSequence('[66] A [84]'), // B A T
 									matched: function () { console.log('na na na na na') }
 								},
 								{
 									sequence: [
-										$.chord.makeSequencePart($.chord.scanCodeMap.Q, null, null, true),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.Q, null, null, true),
 									],
 									matched: function () { console.log('ctrl + (q | Q)!') }
 								},
 								{
 									sequence: [
-										$.chord.makeSequencePart($.chord.scanCodeMap.H, true, null, false),
+										window.chordly.makeSequencePart(window.chordly.scanCodeMap.H, true, null, false),
 									],
 									matched: function () { console.log('shift + H!') }
 								},
 
 							]
 					}
-				)
-				.on('chordMatch', function (e) {
-					console.log('chordMatch event:');
+				);
+				bodyElement.addEventListener('chordlyMatch', function (e) {
+					console.log('chordlyMatch event:');
 					console.log('\t event:', e);
 					console.log('\t lookup:', e.lookup);
 					console.log('\t sequence:', e.sequence);
@@ -78,87 +79,85 @@
 					console.log('\t originalEvent:', e.originalEvent);
 				});
 				
-				$(document).chord('bind', [{
-				    sequence: $.chord.literalStringToSequence('mouse'),
+				bodyElement.pushToChordly('bind', [{
+				    sequence: window.chordly.literalStringToSequence('mouse'),
 				    matched: function () { console.log('squeak!') }
 				},
 				{
 				    sequence: [
-						$.chord.literalStringToSequence('cow'),
-						$.chord.literalStringToSequence('bull'),
+						window.chordly.literalStringToSequence('cow'),
+						window.chordly.literalStringToSequence('bull'),
 				    ],
 				    matched: function () { console.log('moo!') }
 				}]);
 				
-				$(document).chord('bind',
+				bodyElement.pushToChordly('bind',
 				{
-					sequence: $.chord.literalStringToSequence('wolf'),
+					sequence: window.chordly.literalStringToSequence('wolf'),
 					matched: function () { console.log('howl!') }
 				});
 			
-				$(document).chord('bindSequence', 'J A C K', function () { console.log('pop!') }, 'jack in the box');
-				$(document).chord('bindLiteralSequence', 'chicken');
+				bodyElement.pushToChordly('bindSequence', 'J A C K', function () { console.log('pop!') }, 'jack in the box');
+				bodyElement.pushToChordly('bindLiteralSequence', 'chicken');
 
-				$(document).chord('bindLiteralSequence', 'pig', function () { console.log('oink') });
-				$(document).chord('bindLiteralSequence', 'pigs', function () { console.log('oink oink squeal') });
-                
-				$('.initialInputs').chord(
-					{
+				bodyElement.pushToChordly('bindLiteralSequence', 'pig', function () { console.log('oink') });
+				bodyElement.pushToChordly('bindLiteralSequence', 'pigs', function () { console.log('oink oink squeal') });
+
+				const initialInputs = document.querySelectorAll('.initialInputs');
+
+				initialInputs.forEach(ip => {
+					ip.pushToChordly({
 						ignoreFormElements: false,
 						sequenceMap:
-							[
-								{
-									sequence: $.chord.literalStringToSequence('duck'),
-									matched: function () { console.log('quack!') }
-								},
-								{
-									sequence: $.chord.literalStringToSequence('man'),
-									matched: function () { console.log('hello!') }
-								},
-							]
-					}
-				).on('chordMatch', function (e, lookup, sequence, kbEvent) {
-					console.log('man or duck');
+								[
+									{
+										sequence: window.chordly.literalStringToSequence('duck'),
+										matched: function () { console.log('quack!') }
+									},
+									{
+										sequence: window.chordly.literalStringToSequence('man'),
+										matched: function () { console.log('hello!') }
+									},
+								]
+					});
+					ip.addEventListener('chordlyMatch', () => console.log('man or duck'))
 				});
-				
-				$('#adiv').chord(
-					{
-						keyEvent: 'keydown',
-						ignoreFormElements: false,
-						sequenceMap:
-							[
-								{
-									sequence: $.chord.literalStringToSequence('cat'),
-									matched: function () { console.log('meow!') }
-								}
-							]
-					}
+
+				document.querySelector('#adiv').pushToChordly(
+						{
+							keyEvent: 'keydown',
+							ignoreFormElements: false,
+							sequenceMap:
+									[
+										{
+											sequence: window.chordly.literalStringToSequence('cat'),
+											matched: function () { console.log('meow!') }
+										}
+									]
+						}
 				);
-				
-				$('#pause').on('click', function () { $(document).chord('pause') });
-				$('#resume').on('click', function () { $(document).chord('resume') });
-				$('#toggle').on('click', function () { $(document).chord('togglePause') });
 
-				$('#destroy').on('click', function () { $(document).chord('destroy') });
+				document.querySelector('#pause').addEventListener('click', function () { bodyElement.pushToChordly('pause') });
+				document.querySelector('#resume').addEventListener('click', function () { bodyElement.pushToChordly('resume') });
+				document.querySelector('#toggle').addEventListener('click', function () { bodyElement.pushToChordly('togglePause') });
 
-				$('#pushDog').on('click', function () {
-					$(document).chord('pushSequence', $.chord.literalStringToSequence('dog'));
+				document.querySelector('#destroy').addEventListener('click', function () { bodyElement.pushToChordly('destroy') });
+
+				document.querySelector('#pushDog').addEventListener('click', function () {
+					bodyElement.pushToChordly('pushSequence', window.chordly.literalStringToSequence('dog'));
 				});
 
-				$('#pushDogAndAct').on('click', function () {
-					$(document).chord('pushSequenceAndAct', $.chord.literalStringToSequence('dog'));
+				document.querySelector('#pushDogAndAct').addEventListener('click', function () {
+					bodyElement.pushToChordly('pushSequenceAndAct', window.chordly.literalStringToSequence('dog'));
 				});
 
-				$('#actOnBuffer').on('click', function () {
-					$(document).chord('actOnBuffer');
+				document.querySelector('#actOnBuffer').addEventListener('click', function () {
+					bodyElement.pushToChordly('actOnBuffer');
 				});
 
-
-				$('#unbindDog').on('click', function () {
-					$(document).chord('unbind', $.chord.literalStringToSequence('dog'));
+				document.querySelector('#unbindDog').addEventListener('click', function () {
+					bodyElement.pushToChordly('unbind', window.chordly.literalStringToSequence('dog'));
 				});
-				
-
 			});
 		</script>  
 	</head>
