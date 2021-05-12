@@ -32,7 +32,6 @@
       "events",
       "hot-keys",
       "hotkeys",
-      "jquery",
       "key",
       "keyboard",
       "keydown",
@@ -54,8 +53,8 @@
       "build-dist-min": "uglifyjs ./js/chordly.js -mc -o ./dist/chordly-%npm_package_version%.min.js --source-map \"filename='./dist/chordly-%npm_package_version%.min.map'\"",
       "clean": "rimraf ./dist & rimraf ./lib && mkdir dist & mkdir lib",
       "prebuild": "npm run -s clean",
-      "test": "npm run -s test-jq1 && npm run -s test-jq2 && npm run -s test-jq3",
-      "test-jq1": "karma start karma/karma.conf.js"
+      "test": "npm run -s test-karma",
+      "test-karma": "karma start karma/karma.conf.js"
    },
    "devDependencies": {
       "copyfiles": "^2.1.1",
