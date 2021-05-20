@@ -1,6 +1,6 @@
 # About
 
-chordly is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring Chordly up to listen for key sequences, known as chords, entered by a user.
+chordly is a plug-in library that lets you detect and act upon user keyboard input. This is accomplished by wiring Chordly up to listen for key sequences, known as chords, entered by a user.
 
 Chordly was inspired by John Resig's [jQuery.hotkeys](https://github.com/jeresig/jquery.hotkeys). Though we are big fans of jQuery.hotkeys (and John) the plugin lacks functionality we have included in Chordly.
 
@@ -17,7 +17,6 @@ A proud supporter of #mousehate
 - Optional automatic timeout of key buffering
 - Optional Greedy matching
 - Multiple instances allowed on a single page
-- Extensible jQuery like definition of javascript code
 - ...
 
 ## Usage
@@ -25,7 +24,7 @@ A proud supporter of #mousehate
 Chordly may be attached to any DOM node in order to listen for sequences of keyboard activity within that node and its descendants. In its simplest form Chordly can be enabled like this:
 
 ```js
-$(expression).chordly("bindLiteralSequence", "hello", function() {
+document.querySelector(expression).pushToChordly("bindLiteralSequence", "hello", function() {
   console.log("world");
 });
 ```
@@ -37,10 +36,10 @@ _Also, be sure to check out the **Code Snippet** section below that contains use
 While the above is great for simple keyboard input it is Chordly's more advance uses where it begins to sing. Chordly offers a variety of configuration options and makes it easy to handle a number of key sequences with a single configuration. A more advanced form of the above would look likes this:
 
 ```js
-$(expression).chordly({
+document.querySelector(expression).pushToChordly({
   sequenceMap: [
     {
-      sequence: $.chordly.literalStringToSequence("hello"),
+      sequence: window.chordly.literalStringToSequence("hello"),
       matched: function() {
         console.log("world");
       }
@@ -52,17 +51,17 @@ $(expression).chordly({
 Which admittedly looks unnecessarily more complicated until you realize it allows you to do things like this:
 
 ```js
-$(expression).chordly("bind", [
+document.querySelector(expression).pushToChordly("bind", [
   {
-    sequence: $.chordly.literalStringToSequence("mouse"),
+    sequence: window.chordly.literalStringToSequence("mouse"),
     matched: function() {
       console.log("squeak!");
     }
   },
   {
     sequence: [
-      $.chordly.literalStringToSequence("cow"),
-      $.chordly.literalStringToSequence("bull")
+      window.chordly.literalStringToSequence("cow"),
+      window.chordly.literalStringToSequence("bull")
     ],
     matched: function() {
       console.log("moo!");
@@ -110,9 +109,9 @@ In the above examples we are making use of Chordly's `options` object which may 
 
 - **sequence** - a sequence, array of sequences, or array of sequence parts
   to create a sequence from a string use
-  `$.chordly.literalStringToSequence(str)`
+  `window.chordly.literalStringToSequence(str)`
   or to create a part use
-  `$.chordly.makeSequencePart(keyCode, shift, alt, ctrl)`
+  `window.chordly.makeSequencePart(keyCode, shift, alt, ctrl)`
 
 - **matched** - optional function that will be called on sequence completion
 
@@ -122,31 +121,31 @@ In the above examples we are making use of Chordly's `options` object which may 
 
 - **clearSequenceBuffer**
   clear the sequence buffer, effectively resetting the memory of previously pressed keys
-  `$(expression).chordly('clearSequenceBuffer')`
+  `document.querySelector(expression).pushToChordly('clearSequenceBuffer')`
 
 - **destroy**
   destroy the chordly instance unbinding events and removing data from element
-  `$(expression).chordly('destroy')`
+  `document.querySelector(expression).pushToChordly('destroy')`
 
 - **pause**
   pause the chordly instance
-  `$(expression).chordly('pause')`
+  `document.querySelector(expression).pushToChordly('pause')`
 
 - **resume**
   resume the chordly instance
-  `$(expression).chordly('resume')`
+  `document.querySelector(expression).pushToChordly('resume')`
 
 - **togglePause**
   pause/resume chordly instance if was unpaused/paused
-  `$(expression).chordly('togglePause')`
+  `document.querySelector(expression).pushToChordly('togglePause')`
 
 - **bind(args)**
   bind new sequence(s)
   args[0] array of sequence/lookup/matched objects to add to the sequenceMap
 
 ```js
-$(expression).chordly('bind', {
-    sequence: $.chordly.literalStringToSequence('mouse'),
+document.querySelector(expression).pushToChordly('bind', {
+    sequence: window.chordly.literalStringToSequence('mouse'),
     matched: function () {
         console.log('squeak!')
     }
@@ -156,21 +155,21 @@ $(expression).chordly('bind', {
 - **unbind(args)**
   unbind each occurrence of a sequence
   args[0] the sequence to unbind
-  `$(expression).chordly('unbind', $.chordly.literalStringToSequence('mouse'));`
+  `document.querySelector(expression).pushToChordly('unbind', window.chordly.literalStringToSequence('mouse'));`
 
 - **actOnBuffer**
   act on data in buffer as if a listen event has occurred
-  `$(expression).chordly('actOnBuffer')`
+  `document.querySelector(expression).pushToChordly('actOnBuffer')`
 
 - **pushSequence(args)**
   push a sequence onto the buffer. Not that this will not cause a listen to be fired. You must call actOnBuffer if a reaction is desired. To push and act on buffer call pushSequenceAndAct
   args[0] sequence to push (array of sequence parts)
-  `$(expression).chordly('pushSequence', $.chordly.literalStringToSequence('dog'))`
+  `document.querySelector(expression).pushToChordly('pushSequence', window.chordly.literalStringToSequence('dog'))`
 
 - **pushSequenceAndActOnBuffer(args)**
   push a sequence onto the buffer and act upon it
   args[0] sequence to push (array of sequence parts)
-  `$(expression).chordly('pushSequenceAndAct', $.chordly.literalStringToSequence('dog'))`
+  `document.querySelector(expression).pushToChordly('pushSequenceAndAct', window.chordly.literalStringToSequence('dog'))`
 
 ### Events
 
@@ -184,7 +183,7 @@ Chordly also makes available a custom 'chordlyMatch' event. This event object wi
 Below is an example of a handler of the chordlyMatch event.
 
 ```js
-$(expression).on("chordlyMatch", function(e) {
+document.querySelector(expression).addEventListener("chordlyMatch", function(e) {
   console.log("chordlyMatch event:");
   console.log("\t event:", e);
   console.log("\t lookup:", e.lookup);
@@ -203,7 +202,7 @@ The Sky is the limit with Chordly, or at the very least the keyboard. The follow
 This example fires of an method, in this case an alert stating "Konami Code!", when the Konami Code is entered.
 ```js
 $(document).ready(function () {
-    $(document).chordly('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
+  document.querySelector('body').pushToChordly('bindSequence', 'UpArrow UpArrow DownArrow DownArrow LeftArrow RightArrow LeftArrow RightArrow B A Enter', function () { alert("Konami Code!"); });
 });
 ```
 
@@ -213,9 +212,10 @@ This example shows how chordly definition may be chained to have key presses of 
 
 ```js
 $(document).ready(function () {
-    $(document).chordly('bindSequence', 'G H', function() { window.location = 'home.html'; })
-        .chordly('bindSequence', 'G F', function() { window.location = 'faq.html'; })
-        .chordly('bindSequence', 'G A', function() { window.location = 'about.html'; });
+  const body = document.querySelector('body');
+  body.pushToChordly('bindSequence', 'G H', function() { window.location = 'home.html'; });
+  body.pushToChordly('bindSequence', 'G F', function() { window.location = 'faq.html'; });
+  body.pushToChordly('bindSequence', 'G A', function() { window.location = 'about.html'; });
 });
 ```
 
@@ -225,15 +225,15 @@ This example shows how Chordly may be set up so that it will attempt to match on
 
 ```js
 $(document).ready(function() {
-  var $document = $(this);
-  $document.chordly({
+  var $document = document.querySelector(expression);
+  $document.pushToChordly({
     bufferTimeoutMs: 400, // buffer auto-clears after 400 ms
     greedyTimeoutMs: 225 // wait 225 ms for more keys before declaring a match
   });
-  $document.chordly("bindSequence", "C O W", function() {
+  $document.pushToChordly("bindSequence", "C O W", function() {
     alert("one cow: Moo!");
   });
-  $document.chordly("bindSequence", "C O W S", function() {
+  $document.pushToChordly("bindSequence", "C O W S", function() {
     alert("two cows: Moo! Moo!");
   });
 });

@@ -1,172 +1,15 @@
-/*
-    chordly - A hot key jQuery plug-in
-    ------------------------
+function performCallbackOverObjectOrArray(arrayOrObject, cb) {
+    if (arrayOrObject instanceof Array){
+        arrayOrObject.forEach((value, index) => cb(index, value))
+        return;
+    }
 
-    chordly is a plug-in library for jQuery 1.3+ that may be used to detect and act upon key
-    sequences entered by a user.
+    for (const propertyName in arrayOrObject){
+        cb(propertyName, arrayOrObject[propertyName]);
+    }
+}
 
-    chordly may be attached to any DOM node in order to listen for sequences of key activity within 
-    that node and those nested within.
-
-    Usage:
-
-        $('#adiv').chordly(options);
-
-    Options:
-        options may contain the following, otherwise defaults are used
-        
-        captureShift    (bool)    [false]
-            Treat shift as a key press.
-        
-        captureAlt  (bool)  [false]
-            Treat alt as a key press.
-        
-        captureCtrl (bool)  [false]
-            Treat control as a key press.
-
-        ignoreFormElements  (bool)  [true]
-            Ignore key presses within form elements
-
-        keyEvent    (string)    ['keyup']
-            the key event that triggers listening. other option is keydown (or any event that 
-            stores the key code (not ASCII char code) within the 'which' var of the event)
-
-        maxBufferLength (int)   [5]
-            the length of the key buffer. Note that the buffer will be auto expanded in order to
-            maintain at minimum the length of the longest sequence to be detected. Modifying this
-            allows for a greater depth of key press history to be kept if desired
-
-        clearBufferOnMatch (bool)   [true]
-            determines if the key buffer should be cleared on a match
-
-        paused (bool)  [false]
-            determines if chordly on the element should start paused (not collecting key)
-
-	    bufferTimeoutMs (int) [0]
-	        timeout length for key buffer clearing in ms (value of <1 means no timeout)
-
-        greedyTimeoutMs (int) [0]
-            timeout length since last recording of a key press before executing a match event. This is reset by next key press. (value of <1 means no greedy matching)
-
-        sequenceMap (object array)  [empty array]
-            an array of objects defining sequence mapping. Defaults to an empty array. Mapping 
-            object may have the following attributes
-
-                {
-                    sequence    -   a sequence, array of sequences, or array of sequence parts
-                                    to create a sequence from a string use 
-                                        $.chordly.literalStringToSequence(str) 
-                                    or to create a part use
-                                        $.chordly.makeSequencePart(keyCode, shift, alt, ctrl)
-
-                    matched  -   optional function that will be called on sequence completion
-                        
-                    lookup  -   optional lookup code that will be passed to the custom 'chordlyMatch'
-                                event on sequence completion
-
-                }
-
-        Example:
-
-        $('#adiv').chordly(
-                    {
-                        captureShift: false,
-                        captureAlt: false,
-                        captureCtrl: false,
-                        ignoreFormElements: true,
-                        keyEvent: 'keyup',
-                        maxBufferLength: 5,
-                        clearBufferOnMatch: true,
-                        paused: false,
-                        sequenceMap:
-                            [
-                                {
-                                    sequence: $.chordly.literalStringToSequence('cat'),
-                                    matched: function () { console.log('meow!') }
-                                    lookup: 'cat call'
-                                },
-                                {
-                                    sequence: [
-                                        $.chordly.StringToSequence('[68] [79] [71]'),
-                                        $.chordly.literalStringToSequence('puppy')
-                                    ],
-                                    matched: function () { console.log('bark!') }
-                                },
-                                {
-                                    sequence: [
-                                        $.chordly.makeSequencePart($.chordly.scanCodeMap.P),
-                                        $.chordly.makeSequencePart($.chordly.scanCodeMap.I),
-                                        $.chordly.makeSequencePart($.chordly.scanCodeMap.G),
-                                    ],
-                                    matched: function () { console.log('oink!') }	
-                            ]
-                    });
-    
-    Methods:
-        clearSequenceBuffer -   clear the sequence buffer, effectively resetting the memory of 
-                                previously pressed keys
-                                $('#adiv').chordly('clearSequenceBuffer')
-
-        destroy -   destroy the chordly instance unbinding events and removing data from element
-                    $('#adiv').chordly('destroy')
-
-        pause   -   pause the chordly instance
-                    $('#adiv').chordly('pause')
-
-        resume  -   resume the chordly instance
-                    $('#adiv').chordly('resume')
-
-        togglePause -   pause/resume chordly instance if was unpaused/paused
-                        $('#adiv').chordly('togglePause')
-
-        bind(args)  -   bind new sequence(s)
-                    -   args[0] array of sequence/lookup/matched objects to add to the sequenceMap
-                        $('#adiv').chordly('bind', {
-                            sequence: $.chordly.literalStringToSequence('mouse'),
-                            matched: function () { console.log('squeak!') }
-                        });
-
-        unbind(args)    -   unbind each occurrence of a sequence 
-                            args[0] the sequence to unbind
-
-                            $('#adiv').chordly('unbind', $.chordly.literalStringToSequence('mouse'));
-
-                        
-        actOnBuffer   - act on data in buffer as if a listen event has occurred
-                        $('#adiv').chordly('actOnBuffer')
-
-        pushSequence(args)   -   push a sequence onto the buffer. Note that this will not cause a 
-                            listen to be fired. You must call actOnBuffer if a reaction is desired.
-                            To push and act on buffer call pushSequenceAndAct
-                            args[0] -   sequence to push (array of sequence parts)
-                            
-                            $('#adiv').chordly('pushSequence', $.chordly.literalStringToSequence('dog'))
-
-        pushSequenceAndActOnBuffer(args)   -   push a sequence onto the buffer and act upon it
-                            args[0] -   sequence to push (array of sequence parts)
-                            
-                            $('#adiv').chordly('pushSequenceAndAct', $.chordly.literalStringToSequence('dog'))
-
-    Events:
-        chordly also makes available a custom 'chordlyMatch' event.
-        This event object will contain the following NEW properties
-        ability to execute a function with parameters 
-            originalEvent   -   the original triggering event event
-            lookup      -   the lookup as defined in the sequence map
-            sequence    -   the sequence that triggered the event
-            sequenceString  -   the triggering sequence as a string
-
-            $('#adiv').on('chordlyMatch', function (e) {
-                    console.log('chordlyMatch event:');
-                    console.log('\t event:', e);
-                    console.log('\t lookup:', e.lookup);
-                    console.log('\t sequence:', e.sequence);
-                    console.log('\t sequenceString:', e.sequenceString);
-                    console.log('\t originalEvent:', e.originalEvent);
-            });
-
-*/
-;(function ($, window, document, undefined) {
+;(function (window, document, undefined) {
 
     "use strict";
 
@@ -282,7 +125,7 @@
             RightArrow: 39,
             DownArrow: 40
         };
-    
+
     /*
     // invert an arbitrary map
     */
@@ -290,7 +133,7 @@
 
         var inversion = {};
 
-        $.each(input, function (index, element) {
+        performCallbackOverObjectOrArray(input, function (index, element) {
             inversion[element] = index;
         });
 
@@ -301,13 +144,13 @@
     /*
     //	Lookup tables and miscellaneous functions for interacting with chordly
     */
-    $.chordly = {
+    window.chordly = {
 
         scanCodeMap: privateScanCodeMap,
         inverseScanCodeMap: invertMapping(privateScanCodeMap),
 
         /*
-        // Make a sequence part (single atomic index of sequence) 
+        // Make a sequence part (single atomic index of sequence)
         //  keyCode:    the key code to check for
         //  [shift=null]:   the state of shift to check for (null ignores state)
         //  [alt=null]: the state of alt to check for (null ignores state)
@@ -356,14 +199,14 @@
                 c = input.charAt(i);
 
                 if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
-                    keyCode = $.chordly.scanCodeMap[c.toString().toUpperCase()];
+                    keyCode = window.chordly.scanCodeMap[c.toString().toUpperCase()];
                 } else if (c === ' ') {
-                    keyCode = $.chordly.scanCodeMap.Space;
+                    keyCode = window.chordly.scanCodeMap.Space;
                 } else {
                     throw "Encountered unrecognized character '" + c + "' (char code:" + c.charCodeAt(0) + ")  in literal string sequence '" + input + "' at index " + i + "; Literal string to a sequence must be alpha numeric or space.";
                 }
 
-                sequence.push($.chordly.makeSequencePart(keyCode));
+                sequence.push(window.chordly.makeSequencePart(keyCode));
             }
 
             return sequence;
@@ -372,13 +215,13 @@
         /*
         // Convert a string of a specific format to a sequence
         //  input:  the string input to convert to a sequence
-        //      format is whitespace delimited keys (from $.chordly.KeyCodeMap) or square bracket
+        //      format is whitespace delimited keys (from window.chordly.KeyCodeMap) or square bracket
         //      surrounded scan code prefixed with optional modifiers followed plus sign
         //      e.g.: '!shift+A ctrl+shift+Q' or 'L' or '[76]' or 'shift+[76]' or 'UpArrow alt+Space'
         //
         //      modifier (alt/shift/ctrl) state is ignored unless explicitly specified. Duplicate
-        //      modifiers are ignored. If on state is desired apply modifier itself, if off state 
-        //      is desired prefix modifier with a bang (i.e. '!') character. The negation of a 
+        //      modifiers are ignored. If on state is desired apply modifier itself, if off state
+        //      is desired prefix modifier with a bang (i.e. '!') character. The negation of a
         //      modifier overwrites explicit inclusion of redundant modifiers.
         */
         stringToSequence: function (input) {
@@ -401,9 +244,9 @@
                 var keyCode;
 
                 if (key.indexOf('[') !== -1 && key.indexOf(']') !== -1) { // explicit key code
-                                        
+
                     keyCode = parseInt(key.substr(1, key.length - 2), 10);  // remove first and last characters
-                    
+
                     if (isNaN(keyCode)) {
                         throw "Encountered unrecognized keycode '" + key + "' in string sequence '" + input + "' at index " + i + ".";
                     } else if(keyCode <0 || keyCode>255) {
@@ -411,15 +254,15 @@
                     }
 
                 } else {
-                    keyCode = $.chordly.scanCodeMap[key];
+                    keyCode = window.chordly.scanCodeMap[key];
 
                     if (keyCode === undefined) {
-                        throw "Encountered unrecognized sequence element '" + key + "' in string sequence '" + input + "' at index " + i + ". See $.chordly.scanCodeMap for valid sequence elements";
+                        throw "Encountered unrecognized sequence element '" + key + "' in string sequence '" + input + "' at index " + i + ". See window.chordly.scanCodeMap for valid sequence elements";
                     }
 
                 }
 
-                sequence.push($.chordly.makeSequencePart(keyCode, shift, alt, ctrl));
+                sequence.push(window.chordly.makeSequencePart(keyCode, shift, alt, ctrl));
             }
 
             return sequence;
@@ -434,14 +277,14 @@
 
             var keyStr = [];
 
-            $.each(sequence, function (index, key) {
+            performCallbackOverObjectOrArray(sequence, function (index, physicalKey) {
 
-                var keySymbol = $.chordly.inverseScanCodeMap[key.keyCode];
+                var keySymbol = window.chordly.inverseScanCodeMap[physicalKey.keyCode];
 
-                var str = (key.shift === null ? '' : (key.shift ? '' : '!') + 'shift+')
-                    + (key.alt === null ? '' : (key.alt ? '' : '!') + 'alt+')
-                    + (key.ctrl === null ? '' : (key.ctrl ? '' : '!') + 'ctrl+')
-                    + (keySymbol === undefined ? ('[' + key.keyCode + ']') : keySymbol);
+                var str = (physicalKey.shift === null ? '' : (physicalKey.shift ? '' : '!') + 'shift+')
+                    + (physicalKey.alt === null ? '' : (physicalKey.alt ? '' : '!') + 'alt+')
+                    + (physicalKey.ctrl === null ? '' : (physicalKey.ctrl ? '' : '!') + 'ctrl+')
+                    + (keySymbol === undefined ? ('[' + physicalKey.keyCode + ']') : keySymbol);
 
                 keyStr.push(str);
 
@@ -459,7 +302,7 @@
 
             var flatSequenceMap = [];
 
-            $.each(sequenceMap, function (index, sequenceEntry) {
+            performCallbackOverObjectOrArray(sequenceMap, function (index, sequenceEntry) {
 
                 var sequenceEntryArray;
 
@@ -469,7 +312,7 @@
                     sequenceEntryArray = [sequenceEntry.sequence];
                 }
 
-                $.each(sequenceEntryArray, function (index2, subEntry) {
+                performCallbackOverObjectOrArray(sequenceEntryArray, function (index2, subEntry) {
 
                     var flatSequence = {
                         sequence: subEntry,
@@ -488,33 +331,30 @@
 
     };
 
-    /*
-    //  primary chordly plug-in executor
-    */
-    $.fn.chordly = function () {
+    /**
+     * Primary chordly plug-in executor.
+     * Initializes chordly if it does not already exist on given HTMLElement
+     * Performs actions with chordly instance.
+     * Returns Chordly instance on element.
+     */
+    HTMLElement.prototype.pushToChordly = function () {
 
+        const $this = this;
         var option = arguments[0];
         var args = Array.prototype.slice.call(arguments, 1, arguments.length);
 
-        return this.each(function () {
+        if (!$this.chordlyInstance) {
+            const options = (typeof option === 'object' && option);
+            const chordlyInstance = new Chordly($this, options);
+            $this.classList.add('chordly');
+            $this.chordlyInstance = chordlyInstance;
+        }
 
-            var $this = $(this),
-                data = $this.data('chordly'),
-                options = (typeof option === 'object' && option);
+        if (typeof option === 'string') {
+            $this.chordlyInstance[option](args);
+        }
 
-            // chordly is not defined on the associated element, define it
-            if (!data) {
-                data = new Chordly(this, options);
-                $this.data('chordly', data);
-                $this.addClass('chordly');
-            }
-
-            // string was passed
-            if (typeof option === 'string') {
-                data[option](args);
-            }
-
-        });
+        return $this.chordlyInstance;
     };
 
     /*
@@ -525,12 +365,12 @@
     */
     function Chordly(element, options) {
 
-        this.$element = $(element);
-        this.options = $.extend({}, optionDefaults, options);
-	this.bufferTimeout = null;
+        this.$element = element;
+        this.options = {...optionDefaults, ...options};
+        this.bufferTimeout = null;
 
         // post processing
-        this.options.sequenceMap = $.chordly.flattenSequenceMap(this.options.sequenceMap); // flatten sequence map
+        this.options.sequenceMap = window.chordly.flattenSequenceMap(this.options.sequenceMap); // flatten sequence map
         this._expandBufferLength();
 
         // initialize key sequence buffer as empty
@@ -539,7 +379,7 @@
         // initialize and construct prototype
         this._init();
     }
-    
+
     /*
     //  chordly prototype
     */
@@ -548,7 +388,7 @@
         constructor: Chordly,
 
         /*
-        //  Initialize key event listening 
+        //  Initialize key event listening
         */
         _init: function () {
 
@@ -558,17 +398,40 @@
 
             // function that is called on event trigger, explicitly defined so that it may be destroyed
             function eventCall(e) {
-
-                // check of form element ignoring 
-                if (!(ignoreFormElements && ['button', 'checkbox', 'color', 'date', 'datetime', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'textarea', 'time', 'url', 'week'].indexOf(e.target.type) !== -1)) {
+                // check of form element ignoring
+                if (!(ignoreFormElements
+                    && ['button',
+                        'checkbox',
+                        'color',
+                        'date',
+                        'datetime',
+                        'datetime-local',
+                        'email',
+                        'file',
+                        'hidden',
+                        'image',
+                        'month',
+                        'number',
+                        'password',
+                        'radio',
+                        'range',
+                        'reset',
+                        'search',
+                        'submit',
+                        'tel',
+                        'text',
+                        'textarea',
+                        'time',
+                        'url',
+                        'week'].indexOf(e.target.type) !== -1)) {
                     $this._listen(e);
                 }
 
             }
 
-            this.$element.bind(keyEvent, eventCall);
+            this.$element.addEventListener(keyEvent, eventCall); // bind API may have differed from this
 
-            return this.$element;
+            return this;
 
         },
 
@@ -582,7 +445,7 @@
             }
 
             var act = this._pushSequencePartFromEvent(e); // get key info from event and push to history
-            
+
             if (act) {
 
                 // clear greedy timeout (if set)
@@ -602,7 +465,7 @@
 
                     this.actOnBuffer(e); // check for matches and act
                 }
-                                
+
             }
         },
 
@@ -612,12 +475,12 @@
         _pushSequencePartFromEvent: function (e) {
 
             var keyCode = e.which,
-                sequencePart = $.chordly.makeSequencePart(keyCode, e.shiftKey, e.altKey, e.ctrlKey);
+                sequencePart = window.chordly.makeSequencePart(keyCode, e.shiftKey, e.altKey, e.ctrlKey);
 
             // if modifier keys aren't to be trapped simply ignore and return
-            if ((!this.options.captureShift && keyCode === $.chordly.scanCodeMap.Shift)
-                || (!this.options.captureAlt && keyCode === $.chordly.scanCodeMap.Alt)
-                || (!this.options.captureCtrl && keyCode === $.chordly.scanCodeMap.Control)) {
+            if ((!this.options.captureShift && keyCode === window.chordly.scanCodeMap.Shift)
+                || (!this.options.captureAlt && keyCode === window.chordly.scanCodeMap.Alt)
+                || (!this.options.captureCtrl && keyCode === window.chordly.scanCodeMap.Control)) {
                 return false;
             }
 
@@ -639,18 +502,18 @@
 
             this.sequenceBuffer.push(sequencePart);
 
-    	    // clear timeout (if set) so that buffer will not be cleared
-	        if(this.bufferTimeout !== null) {
-    	        clearTimeout(this.bufferTimeout);
-	        }
+            // clear timeout (if set) so that buffer will not be cleared
+            if(this.bufferTimeout !== null) {
+                clearTimeout(this.bufferTimeout);
+            }
 
-	        // create new time out to clear buffer
-	        if(this.options.bufferTimeoutMs > 0) {
-	            var $this = this;
-    	    	this.bufferTimeout = setTimeout( function() {
-    	    	    $this.clearSequenceBuffer();
-    	    	}, this.options.bufferTimeoutMs);
-	        }
+            // create new time out to clear buffer
+            if(this.options.bufferTimeoutMs > 0) {
+                var $this = this;
+                this.bufferTimeout = setTimeout( function() {
+                    $this.clearSequenceBuffer();
+                }, this.options.bufferTimeoutMs);
+            }
 
         },
 
@@ -672,7 +535,7 @@
             keyBufferSubSequence = this.sequenceBuffer.slice(keyBufferLength - sequenceLength);
 
             for (i = 0; i < sequenceLength; i++) {
-                if (!$.chordly.keysEqual(keyBufferSubSequence[i], sequence[i])) {
+                if (!window.chordly.keysEqual(keyBufferSubSequence[i], sequence[i])) {
                     return false;
                 }
             }
@@ -681,14 +544,14 @@
         },
 
         /*
-        //  expand the buffer length as appropriate in order to be at minimum the size of the 
+        //  expand the buffer length as appropriate in order to be at minimum the size of the
         //  the longest registered sequence
         */
         _expandBufferLength: function () {
 
             var maxLen = 0;
 
-            $.each(this.options.sequenceMap, function (index, item) {
+            performCallbackOverObjectOrArray(this.options.sequenceMap, function (index, item) {
                 if (item.sequence.length > maxLen) {
                     maxLen = item.sequence.length;
                 }
@@ -717,7 +580,7 @@
             var $this = this,
                 matchFound = false;
 
-            $.each(this.options.sequenceMap, function (index, sequenceEntry) {
+            performCallbackOverObjectOrArray(this.options.sequenceMap, function (index, sequenceEntry) {
 
                 var sequence = sequenceEntry.sequence;
 
@@ -728,13 +591,13 @@
                     }
 
                     // Event triggering. Create new event and associate appropriate values to it
-                    var chordlyMatchEvent = $.Event('chordlyMatch');
+                    var chordlyMatchEvent = new Event('chordlyMatch');
                     chordlyMatchEvent.originalEvent = e;
                     chordlyMatchEvent.lookup = sequenceEntry.lookup;
                     chordlyMatchEvent.sequence = sequence;
-                    chordlyMatchEvent.sequenceString = $.chordly.sequenceToString(sequence);
+                    chordlyMatchEvent.sequenceString = window.chordly.sequenceToString(sequence);
 
-                    $this.$element.trigger(chordlyMatchEvent); // trigger event
+                    $this.$element.dispatchEvent(chordlyMatchEvent); // trigger event
 
                     matchFound = true;
 
@@ -772,9 +635,9 @@
         //  destroy chordly
         */
         destroy: function () {
-            this.$element.unbind(this.keyEvent, this.eventCall);
-            this.$element.removeClass('chordly');
-            this.$element.removeData('chordly');
+            this.$element.removeEventListener(this.keyEvent, this.eventCall);
+            this.$element.classList.remove('chordly');
+            this.$element.chordlyInstance = undefined;
         },
 
         /*
@@ -785,10 +648,10 @@
 
             var sequenceMap = this.options.sequenceMap,
                 sequences = args[0] instanceof Array
-                    ? $.chordly.flattenSequenceMap(args[0])
-                    : $.chordly.flattenSequenceMap([args[0]]);
+                    ? window.chordly.flattenSequenceMap(args[0])
+                    : window.chordly.flattenSequenceMap([args[0]]);
 
-            $.each(sequences, function (index, sequence) {
+            performCallbackOverObjectOrArray(sequences, function (index, sequence) {
                 sequenceMap.push(sequence);
             });
 
@@ -804,7 +667,7 @@
         bindLiteralSequence: function (args) {
 
             this.bind([{
-                sequence: $.chordly.literalStringToSequence(args[0]),
+                sequence: window.chordly.literalStringToSequence(args[0]),
                 matched: typeof args[1] === 'function' ? args[1] : undefined,
                 lookup: typeof args[1] === 'string' ? args[1] : args[2]
             }]);
@@ -819,7 +682,7 @@
         bindSequence: function (args) {
 
             this.bind([{
-                sequence: $.chordly.stringToSequence(args[0]),
+                sequence: window.chordly.stringToSequence(args[0]),
                 matched: typeof args[1] === 'function' ? args[1] : undefined,
                 lookup: typeof args[1] === 'string' ? args[1] : args[2]
             }]);
@@ -831,11 +694,11 @@
         */
         unbind: function (args) {
 
-            var sequenceAsString = $.chordly.sequenceToString(args[0]);
+            var sequenceAsString = window.chordly.sequenceToString(args[0]);
 
             // find sequences from end to start removing as they are encountered
             for (var i = this.options.sequenceMap.length - 1; i > -1; i--) {
-                if (sequenceAsString === $.chordly.sequenceToString(this.options.sequenceMap[i].sequence)) {
+                if (sequenceAsString === window.chordly.sequenceToString(this.options.sequenceMap[i].sequence)) {
                     this.options.sequenceMap.splice(i, 1);
                 }
             }
@@ -850,7 +713,7 @@
 
             var $this = this;
 
-            $.each(args[0], function (index, sequencePart) {
+            performCallbackOverObjectOrArray(args[0], function (index, sequencePart) {
                 $this._pushSequencePart(sequencePart);
             });
 
@@ -864,8 +727,8 @@
             this.pushSequence(args);
             this.actOnBuffer();
         },
-            
+
     };
 
 
-})(jQuery, window, document);
+})(window, document);

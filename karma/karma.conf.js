@@ -5,14 +5,12 @@ module.exports = function(config) {
     basePath: '',
     plugins: [
       'karma-qunit',
-      'karma-jquery',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-trx-reporter'
     ],
     frameworks: [
-      'qunit',
-      'jquery-3.0.0'
+      'qunit'
     ],
     files: [
       '../js/chordly.js',
@@ -22,7 +20,7 @@ module.exports = function(config) {
       'trx',
       'progress'
     ],
-    trxReporter: { outputFile: 'test-results/test-results-jq3.trx', shortTestName: false },
+    trxReporter: { outputFile: 'test-results/test-results-jq1.trx', shortTestName: false },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

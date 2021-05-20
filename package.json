@@ -1,10 +1,10 @@
 {
    "name": "chordly",
    "packageName": "chordly",
-   "version": "1.0.0",
-   "description": "chordly is a plug-in library for jQuery 1.3+ that lets you detect and act upon user keyboard input. This is accomplished by wiring chordly to listen for key sequences, known as chords, entered by a user.",
+   "version": "2.0.0",
+   "description": "chordly is a plug-in library that lets you detect and act upon user keyboard input. This is accomplished by wiring chordly to listen for key sequences, known as chords, entered by a user.",
    "author": "Sandia National Laboratories",
-   "main": "lib/chordly-1.0.0.js",
+   "main": "lib/chordly-2.0.0.js",
    "contributors": [
       {
          "name": "Robert H. Engelhardt",
@@ -32,7 +32,6 @@
       "events",
       "hot-keys",
       "hotkeys",
-      "jquery",
       "key",
       "keyboard",
       "keydown",
@@ -54,24 +53,19 @@
       "build-dist-min": "uglifyjs ./js/chordly.js -mc -o ./dist/chordly-%npm_package_version%.min.js --source-map \"filename='./dist/chordly-%npm_package_version%.min.map'\"",
       "clean": "rimraf ./dist & rimraf ./lib && mkdir dist & mkdir lib",
       "prebuild": "npm run -s clean",
-      "test": "npm run -s test-jq1 && npm run -s test-jq2 && npm run -s test-jq3",
-      "test-jq1": "karma start ./karma/karma.jquery-1.conf.js",
-      "test-jq2": "karma start ./karma/karma.jquery-2.conf.js",
-      "test-jq3": "karma start ./karma/karma.jquery-3.conf.js"
+      "test": "npm run -s test-karma",
+      "test-karma": "karma start karma/karma.conf.js"
    },
    "devDependencies": {
       "copyfiles": "^2.1.1",
       "karma": "^4.2.0",
       "karma-chrome-launcher": "^3.0.0",
       "karma-firefox-launcher": "^1.1.0",
-      "karma-jquery": "^0.2.4",
       "karma-qunit": "^4.0.0",
       "karma-trx-reporter": "0.3.0",
       "qunit": "^2.9.2",
       "rimraf": "^2.6.3",
       "uglify-js": "^3.6.0"
    },
-   "dependencies": {
-      "jquery": ">=1.5.1"
-   }
+   "dependencies": {}
 }
